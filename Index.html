@@ -7,41 +7,107 @@
     <title>Portfolio Website</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Inter:600&display=swap" rel="stylesheet">
+</head>
+<script>
+    window.addEventListener('scroll', function () {
+        const nav = document.getElementById('navigationBar');
+        if (window.scrollY > 10) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
+</script>
 
 
 <body>
 
-    <div class="navigationBar">
+    <div id="navigationBar">
         <div>
-            <h1 id="logo">M.</h1>
+            <a href="#home">
+                <h1 id="logo">M.</h1>
+            </a>
         </div>
         <nav class="navigation">
             <ul>
                 <li><a href="#home">Home</a></li>
-                <li><a href="#experience">About</a></li>
-                <li><a href="#about">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact" id="contact-Button-Nav">Contact</a></li>
-            </ul>
-        </nav>
-    </div>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>  
+                <li><a href="#projects">Projects</a></li>  
+                <li><a href="#contact" id="contact-Button-Nav">Contact</a></li>  
+            </ul>  
+        </nav>  
+    </div>  
 
-    <div class="home">
-        <div class="homeContent">
-            <div>
-                <h1>Hi, I'm <span id="name">Marius Constantin</span></h1>
-                <h2>Full Stack Developer</h2>
-                <p>I create beautiful websites and applications with a focus
-                    <br> on user experience, responsive design and clean code.
-                </p>
-                <div class="home-buttons">
+    <div class="page" id="home">  
+        <div class="homeContent">  
+            <div>  
+                <h1 id="nameTitle">Hi, I'm <span id="name">Marius Constantin</span></h1>  
+                <h2>Full Stack Developer</h2>  
+                <p>I create beautiful websites and applications with a focus  
+                    <br> on user experience, responsive design and clean code.  
+                </p>  
+                <div class="home-buttons">  
                     <button id="projects-Button">View My Work</button>
                     <button id="contact-Button">Contact Me</button>
                 </div>
             </div>
-            <h1 id="sectionName">Home</h1>
         </div>
+        <h1 id="sectionName">Home</h1>
     </div>
+
+
+    <div class="page"" id="about">
+        
+
+        <h1 id="aboutTitle">Full Stack Developer with a Passion for User Experience</h1>
+
+
+        <div class="aboutContent">
+            <div class="aboutMe">
+                <div id="aboutMe-Section">
+                    I'm Marius Constantin, a web designer and developer based<br>
+                    in Ireland, originally from Romania. Currently, I'm studying<br>
+                    Mobile and Web Computing at the Technological University<br>
+                    of Shannon, where I'm expanding my skills to create<br>
+                    exceptional digital experiences.
+
+                </div>
+
+                <div id="aboutMe-Section">
+                    With a background in both design and development, I bring a<br>
+                    holistic perspective to every project. I believe that the best<br>
+                    websites are not just visually appealing but also intuitive,<br>
+                    accessible, and technically sound.
+
+                </div>
+
+                <div id="aboutMe-Section">
+                    Being bilingual in Romanian and English allows me to work<br>
+                    with a diverse range of clients and bring unique cultural<br>
+                    perspectives to my work.
+                </div>
+            </div>
+            <div class="personal-details">
+                <h2 id="PersonalTitle">Personal Details</h2>
+                <div id="details"><strong>Name:</strong> <p>Marius Constantin</p></div>
+                <div id="details"><strong>Education:</strong> <p>Technological University of Shannon</p></div>
+                <div id="details"><strong>Degree:</strong> <p>Mobile and Web Computing</p></div>
+                <div id="details"><strong>Location:</strong> <p>Ireland (from Romania)</p></div>
+                <div id="details"><strong>Languages:</strong><p> English, Romanian</p></div>
+                <a id="contactLink" href="#">Let's work together &rarr;</a>
+            </div>
+           
+        </div>
+        <h1 id="sectionName">About</h1>
+    </div>
+  
+
+    <div class="page">
+        
+
+    </div>
+  
 </body>
 
 </html>
