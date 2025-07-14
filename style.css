@@ -26,9 +26,9 @@
 /* #region end*/
 
 
-/* html {
+html {
     scroll-behavior: smooth;
-} */
+}
 
 html a {
     text-decoration: none;
@@ -38,7 +38,8 @@ body {
     min-height: 100vh;
     margin: 0;
     background: linear-gradient(45deg, #050C38, #1b2062, #6700A3);
-
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
 }
 
 .page {
@@ -75,54 +76,180 @@ body {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     text-align: left;
-    margin-left: 10px;
+    margin: 0;
     text-shadow: 0 0 5px #000, 0 0 10px #000;
 }
 
 #navigationBar {
     position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 2fr;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 200px 0 200px;
+    padding: 20px 200px 20px 250px;
     background: transparent;
-    box-shadow: none;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    text-align: center;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+    animation: slideInDown 0.6s ease-out;
+}
 
+#navigationBar.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#navigationBar.hidden #logo {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
 }
 
 .navigation {
-    margin-left: 150px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
-    width: 70%;
-
+    width: 100%;
 }
 
 nav a {
     position: relative;
     color: #ffffff;
-    /* your base link color */
     text-decoration: none;
     transition: color 0.2s ease;
 }
+
 nav a:hover {
     color: var(--amber);
-    /* change to your hover color */
 }
 
 .navigation ul {
     list-style: none;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
     padding: 0;
     margin: 0;
     gap: 3em;
+    align-items: center;
+}
+
+/* Navigation Toggle in Contact Position */
+.nav-toggle-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-contact-link {
+    transition: all 0.3s ease;
+}
+
+.nav-toggle-burger {
+    position: absolute;
+    width: 20px;
+    height: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-toggle-burger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--white);
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.nav-toggle-burger:hover span {
+    background: var(--amber);
+}
+
+/* Show burger when navigation is hidden */
+#navigationBar.hidden .nav-contact-link {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#navigationBar.hidden .nav-toggle-burger {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Hide burger on hover and show full navigation */
+.nav-toggle-container:hover .nav-toggle-burger {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-toggle-container:hover .nav-contact-link {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Show full navigation on hover */
+#navigationBar.hidden:hover {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+#navigationBar.hidden:hover .navigation ul li {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#navigationBar.hidden:hover .nav-contact-link {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#navigationBar.hidden:hover .nav-toggle-burger {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Smooth transitions for navigation items */
+.navigation ul li {
+    transition: all 0.3s ease;
+}
+
+#navigationBar.hidden .navigation ul li:not(.nav-toggle-container) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Keep navigation visible while hovering */
+#navigationBar:hover {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    pointer-events: all !important;
+}
+
+#navigationBar:hover .navigation ul li {
+    opacity: 1 !important;
+    pointer-events: all !important;
+}
+
+#navigationBar:hover .nav-contact-link {
+    opacity: 1 !important;
+    pointer-events: all !important;
+}
+
+#navigationBar:hover .nav-toggle-burger {
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 /* #endregion */
@@ -182,43 +309,88 @@ nav a:hover {
 
 .home-buttons {
     display: flex;
-    gap: 1em;
-    transition: transform 0.15s, box-shadow 0.15s, background 0.3s, color 0.3s;
-    margin-top: 1em;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-top: 2em;
+    padding: 0.5em;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    width: fit-content;
+}
 
+.button-separator {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.5em;
+    font-weight: 300;
+    margin: 0 1em;
+    transition: opacity 0.3s ease;
+}
+
+#projects-Button, #contact-Button {
+    background: transparent;
+    border: none;
+    padding: 1em 2em;
+    font-weight: 600;
+    font-size: 1em;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
 
 #projects-Button {
-    background-color: #2563EB;
-    border-radius: 10px;
-    border: 10px solid #2563EB;
-    font-weight: 700;
-}
-
-#projects-Button:hover,
-#projects-Button:focus {
-    color: #fff;
-    cursor: pointer;
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 4px 16px 0 rgba(37, 99, 235, 0.18);
-
+    border-radius: 10px 0 0 10px;
 }
 
 #contact-Button {
-    background-color: #1F2937;
-    border-radius: 10px;
-    border: 10px solid #1F2937;
-    color: #ffffff;
-    font-weight: 700;
+    border-radius: 0 10px 10px 0;
 }
 
-#contact-Button:hover,
-#contact-Button:focus {
-    color: #fff;
-    cursor: pointer;
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 4px 16px 0 rgba(28, 38, 59, 0.18);
+/* Hover effects */
+.home-buttons:hover .button-separator {
+    opacity: 0.8;
+}
 
+.home-buttons:hover #projects-Button:not(:hover) {
+    opacity: 0.4;
+    color: rgba(255, 255, 255, 0.4);
+    transform: scale(0.95);
+}
+
+.home-buttons:hover #contact-Button:not(:hover) {
+    opacity: 0.4;
+    color: rgba(255, 255, 255, 0.4);
+    transform: scale(0.95);
+}
+
+#projects-Button:hover {
+    background: var(--aqua);
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px var(--aqua);
+}
+
+#contact-Button:hover {
+    background: var(--amber);
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px var(--amber);
+}
+
+/* Active states */
+#projects-Button:active {
+    transform: scale(0.98);
+}
+
+#contact-Button:active {
+    transform: scale(0.98);
 }
 
 .homeContent {
@@ -248,7 +420,6 @@ nav a:hover {
     margin-left: 0;
     margin-bottom: 1em;
     height: 100px;
-    ;
 }
 
 #userExperience {
@@ -315,11 +486,19 @@ nav a:hover {
 }
 
 #contactLink {
-    display: flex;
-    color: var(--amber);
-    width: 41%;
+    color: var(--aqua);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
     margin-top: 40px;
+}
 
+#contactLink:hover {
+    color: var(--amber);
+    transform: translateX(5px);
 }
 
 /* #endregion */
@@ -457,6 +636,9 @@ nav a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
+    /* Ensure parent doesn't interfere with stacking */
+    transform: translateZ(0);
 }
 
 .project {
@@ -473,85 +655,116 @@ nav a:hover {
     transition: all 0.3s ease;
     cursor: pointer;
     color: var(--white);
-}
+    opacity: 1 ;
+    visibility: visible ;
+    display: block !important;
+    /* Force new stacking context */
+    isolation: isolate;
+    filter:blur(2px);
 
-.project:nth-child(1) {
-    transform: translateX(-180px) translateY(0px);
-    z-index: 3;
-}
-
-.project:nth-child(2) {
-    transform: translateX(-80px) translateY(20px);
-    z-index: 2;
-}
-
-.project:nth-child(3) {
-    transform: translateX(0px) translateY(40px);
-    z-index: 1;
-}
-
-
-.project:nth-child(1):hover {
-    transform: translateX(-200px) translateY(-20px) scale(1.05);
-    z-index: 10;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 0.15);
-}
-.project:nth-child(2):hover {
-    transform: translateX(-100px) translateY(0px) scale(1.05);
-    z-index: 10;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 0.15);
-}
-.project:nth-child(3):hover {
-    transform: translateX(-20px) translateY(20px) scale(1.05);
-    z-index: 10;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 0.15);
 }
 
 .project h3 {
     font-size: 1.5em;
-    margin-bottom: 1em;
     color: var(--amber);
+    margin-bottom: 0.5em;
+    text-shadow: 0 0 5px #000, 0 0 10px #000;
 }
 
 .project p {
     font-size: 1em;
-    line-height: 1.6;
-    margin-bottom: 1.5em;
-    opacity: 0.9;
+    color: var(--white);
+    margin-bottom: 1em;
+    text-shadow: 0 0 5px #000, 0 0 10px #000;
+}
+.project:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    filter: blur(0px);
 }
 
 .project .tech-stack {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em;
-    margin-bottom: 1.5em;
 }
 
 .project .tech-tag {
+    background: rgba(255, 255, 255, 0.2);
+    color: var();
+    padding: 0.5em 1em;
+    border-radius: 10px;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Diagonal positioning for project cards */
+.project:nth-child(1) {
+    transform: translateX(-200px) translateY(0) rotate(-5deg);
+   
+}
+
+.project:nth-child(2) {
+    transform: translateX(-100px) translateY(0) rotate(0deg);
+    z-index: 10;
+    filter:blur(0px)
+ 
+}
+
+.project:nth-child(3) {
+    transform: translateX(0px) translateY(0) rotate(5deg);
+
+}
+
+/* Hover effects for diagonal cards */
+.project:nth-child(1):hover {
+    transform: translateX(-260px) translateY(-30px) rotate(0deg) scale(1.05);
+    z-index: 100;
+}
+
+.project:nth-child(2):hover {
+    transform: translateX(-100px) translateY(-30px) rotate(0deg) scale(1.05);
+    z-index: 100;
+}
+
+.project:nth-child(3):hover {
+    transform: translateX(60px) translateY(-30px) rotate(0deg) scale(1.05);
+    z-index: 100;
+}
+
+
+/* Blur other cards when one is hovered */
+.projectsContent:hover .project:not(:hover) {
+    filter: blur(2px);
+    opacity: 0.6;
+    transform-origin: center;
+}
+
+.project .tech-tag:hover {
     background: var(--aqua);
     color: #000;
-    padding: 0.3em 0.8em;
-    border-radius: 15px;
-    font-size: 0.8em;
-    font-weight: 600;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 229, 196, 0.3);
 }
 
-.project .project-link {
-    color: var(--amber);
+.project-link {
+    display: inline-block;
+    margin-top: 1em;
+    color: var(--aqua);
     text-decoration: none;
     font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
 }
 
-.project .project-link:hover {
-    color: var(--white);
+.project-link:hover {
+    color: var(--amber);
+    transform: translateX(5px);
 }
+
+
+
+
 /* #endregion */
 /* #region Contact */
 #contact {
@@ -722,3 +935,261 @@ nav a:hover {
 }
 
 /* #endregion */
+
+/* #region Animations */
+
+/* Page load fade-in animation is integrated with main body selector */
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Initial state for animated elements */
+.animate-element {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Animate-in class for elements that come into view */
+.animate-in {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Staggered animation for skills */
+.skill.animate-element {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* Form elements animation */
+.form-group.animate-element {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* Button animations */
+button.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+/* Social links animation */
+.social-link.animate-element {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* Navigation animation - integrated into existing navigationBar selector */
+
+/* Keyframes for slide-in animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Special animations for specific elements */
+.homeContent.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.home-buttons.animate-element {
+    animation: slideInUp 1.2s ease-out forwards;
+}
+
+/* Individual button animations */
+#projects-Button.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+#contact-Button.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.button-separator.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+/* Section name animations */
+#sectionName.animate-element {
+    animation: slideInRight 1.2s ease-out forwards;
+}
+
+/* About section animations */
+#aboutTitle.animate-element {
+    animation: slideInLeft 0.8s ease-out forwards;
+}
+
+.aboutContent.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.personal-details.animate-element {
+    animation: slideInRight 1s ease-out forwards;
+}
+
+.aboutMe.animate-element {
+    animation: slideInLeft 1s ease-out forwards;
+}
+
+/* Skills section animations */
+#skillsTitle.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+.skillsContent.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.frontEnd.animate-element {
+    animation: slideInLeft 1s ease-out forwards;
+}
+
+.backEnd.animate-element {
+    animation: slideInRight 1s ease-out forwards;
+}
+
+/* Individual skill bar animations */
+.skill-header.animate-element {
+    animation: slideInLeft 0.8s ease-out forwards;
+}
+
+.skill-bar.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.skill-fill.animate-element {
+    animation: slideInUp 1.2s ease-out forwards;
+}
+
+/* Projects section animations */
+#projectsTitle.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+.projectsContent.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.tech-stack.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+.project-link.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+/* Contact section animations */
+#contactTitle.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+.contactContent.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+.contact-form.animate-element {
+    animation: slideInLeft 1s ease-out forwards;
+}
+
+.contact-info.animate-element {
+    animation: slideInRight 1s ease-out forwards;
+}
+
+#send-Button.animate-element {
+    animation: slideInUp 1.2s ease-out forwards;
+}
+
+.socials.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+/* Footer animation */
+footer.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+.footer-content.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+/* Text elements animation */
+h1.animate-element, h2.animate-element, h3.animate-element {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+p.animate-element {
+    animation: slideInUp 1s ease-out forwards;
+}
+
+/* Page animations */
+.page.animate-element {
+    animation: slideInUp 1.2s ease-out forwards;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+    
+    .animate-element {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* #endregion */
+
+
+/* #region Footer */
+footer {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    padding: 2em 200px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9em;
+    border-top: 1px solid var(--gray-dark);
+}

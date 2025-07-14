@@ -7,15 +7,66 @@
     <title>Portfolio Website</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Inter:600&display=swap" rel="stylesheet">
+    <script src="portfolio.js"></script>
 </head>
 <script>
+    let lastScrollY = window.scrollY;
+    
     window.addEventListener('scroll', function () {
         const nav = document.getElementById('navigationBar');
-        if (window.scrollY > 10) {
-            nav.classList.add('scrolled');
+        const currentScrollY = window.scrollY;
+        
+        if (currentScrollY > 100) {
+            if (currentScrollY > lastScrollY) {
+                // Scrolling down - hide navigation but keep logo
+                nav.classList.add('hidden');
+            } else {
+                // Scrolling up - show navigation
+                nav.classList.remove('hidden');
+            }
         } else {
-            nav.classList.remove('scrolled');
+            // At top - show normal navigation
+            nav.classList.remove('hidden');
         }
+        
+        lastScrollY = currentScrollY;
+    });
+    
+    // Handle smooth navigation interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        const navigationBar = document.getElementById('navigationBar');
+        const navToggleContainer = document.querySelector('.nav-toggle-container');
+        
+        let hideTimeout;
+        
+        // Show navigation on hover over toggle area
+        navToggleContainer.addEventListener('mouseenter', function() {
+            clearTimeout(hideTimeout);
+            if (navigationBar.classList.contains('hidden')) {
+                navigationBar.style.transform = 'translateY(0)';
+                navigationBar.style.opacity = '1';
+                navigationBar.style.pointerEvents = 'all';
+            }
+        });
+        
+        // Keep navigation visible when hovering over navigation bar
+        navigationBar.addEventListener('mouseenter', function() {
+            clearTimeout(hideTimeout);
+        });
+        
+        // Hide navigation when leaving
+        function startHideTimer() {
+            hideTimeout = setTimeout(function() {
+                if (navigationBar.classList.contains('hidden')) {
+                    navigationBar.style.transform = 'translateY(-100%)';
+                    navigationBar.style.opacity = '0';
+                    navigationBar.style.pointerEvents = 'none';
+                }
+            }, 300);
+        }
+        
+        navToggleContainer.addEventListener('mouseleave', startHideTimer);
+        navigationBar.addEventListener('mouseleave', startHideTimer);
     });
 </script>
 
@@ -33,7 +84,14 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>  
                 <li><a href="#projects">Projects</a></li>  
-                <li><a href="#contact" id="contact-Button-Nav">Contact</a></li>  
+                <li class="nav-toggle-container">
+                    <a href="#contact" class="nav-contact-link">Contact</a>
+                    <div class="nav-toggle-burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </li>
             </ul>  
         </nav>  
     </div>  
@@ -46,11 +104,12 @@
                 <p>I create beautiful websites and applications with a focus  
                     <br> on user experience, responsive design and clean code.  
                 </p>  
-                <div class="home-buttons">  
-                    <button id="projects-Button">View My Work</button>
-                    <button id="contact-Button">Contact Me</button>
-                </div>
             </div>
+        </div>
+        <div class="home-buttons">  
+            <button id="projects-Button">View My Work</button>
+            <div class="button-separator">|</div>
+            <button id="contact-Button">Contact Me</button>
         </div>
         <h1 id="sectionName">Home</h1>
     </div>
@@ -239,6 +298,15 @@
         <h1 id="projectsTitle">My <strong id="expertise">Projects</strong></h1>
         <div class="projectsContent">
             <div class="project">
+                <h3>Learner Driving Ireland</h3>
+                <p>Work in progress</p>
+                <div class="tech-stack">
+                    <span class="tech-tag"></span>
+                    <span class="tech-tag"> </span>
+                    <span class="tech-tag"></span>
+                </div>
+                <a href="#" class="project-link">View Project →</a>
+            </div><div class="project">
                 <h3>Portfolio Website</h3>
                 <p>A modern, responsive portfolio website built with HTML, CSS, and JavaScript featuring smooth animations and interactive elements.</p>
                 <div class="tech-stack">
@@ -249,18 +317,8 @@
                 <a href="#" class="project-link">View Project →</a>
             </div>
             <div class="project">
-                <h3>W.I.P</h3>
-                <p>Working on it!</p>
-                <div class="tech-stack">
-                    <span class="tech-tag"></span>
-                    <span class="tech-tag"> </span>
-                    <span class="tech-tag"></span>
-                </div>
-                <a href="#" class="project-link">View Project →</a>
-            </div>
-            <div class="project">
-                <h3>W.I.P</h3>
-                <p>Working on it!</p>
+                <h3>Cozmin Detailing</h3>
+                <p>Work in progress</p>
                 <div class="tech-stack">
                     <span class="tech-tag"></span>
                     <span class="tech-tag"></span>
@@ -314,6 +372,13 @@
             </div>
         </div>
     </div> 
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Marius Constantin. All rights reserved.</p>
+            <p>Designed with passion and creativity.</p>
+        </div>
+    </footer>
 </body>
 
 </html>
