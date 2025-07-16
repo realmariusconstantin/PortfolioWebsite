@@ -96,7 +96,7 @@ body {
     font-weight: 600;
     transition: all 0.3s ease;
     transform: translateY(0);
-    animation: slideInDown 0.6s ease-out;
+    animation: slideInFromTop 0.8s ease-out;
 }
 
 #navigationBar.hidden {

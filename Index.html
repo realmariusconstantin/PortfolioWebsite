@@ -9,68 +9,6 @@
     <link href="https://fonts.googleapis.com/css?family=Inter:600&display=swap" rel="stylesheet">
     <script src="portfolio.js"></script>
 </head>
-<script>
-    let lastScrollY = window.scrollY;
-    
-    window.addEventListener('scroll', function () {
-        const nav = document.getElementById('navigationBar');
-        const currentScrollY = window.scrollY;
-        
-        if (currentScrollY > 100) {
-            if (currentScrollY > lastScrollY) {
-                // Scrolling down - hide navigation but keep logo
-                nav.classList.add('hidden');
-            } else {
-                // Scrolling up - show navigation
-                nav.classList.remove('hidden');
-            }
-        } else {
-            // At top - show normal navigation
-            nav.classList.remove('hidden');
-        }
-        
-        lastScrollY = currentScrollY;
-    });
-    
-    // Handle smooth navigation interactions
-    document.addEventListener('DOMContentLoaded', function() {
-        const navigationBar = document.getElementById('navigationBar');
-        const navToggleContainer = document.querySelector('.nav-toggle-container');
-        
-        let hideTimeout;
-        
-        // Show navigation on hover over toggle area
-        navToggleContainer.addEventListener('mouseenter', function() {
-            clearTimeout(hideTimeout);
-            if (navigationBar.classList.contains('hidden')) {
-                navigationBar.style.transform = 'translateY(0)';
-                navigationBar.style.opacity = '1';
-                navigationBar.style.pointerEvents = 'all';
-            }
-        });
-        
-        // Keep navigation visible when hovering over navigation bar
-        navigationBar.addEventListener('mouseenter', function() {
-            clearTimeout(hideTimeout);
-        });
-        
-        // Hide navigation when leaving
-        function startHideTimer() {
-            hideTimeout = setTimeout(function() {
-                if (navigationBar.classList.contains('hidden')) {
-                    navigationBar.style.transform = 'translateY(-100%)';
-                    navigationBar.style.opacity = '0';
-                    navigationBar.style.pointerEvents = 'none';
-                }
-            }, 300);
-        }
-        
-        navToggleContainer.addEventListener('mouseleave', startHideTimer);
-        navigationBar.addEventListener('mouseleave', startHideTimer);
-    });
-</script>
-
-
 <body>
     <div id="navigationBar">
         <div>
