@@ -1,0 +1,80 @@
+:root {
+    /* Deep Space Backgrounds */
+    --void-black: #000000;
+    --space-black: #0a0a0a;
+    --deep-space: #0f0f23;
+    --nebula-dark: #1a1a2e;
+    --cosmic-dark: #16213e;
+    
+    /* Cosmic Accents */
+    --stellar-blue: #00d4ff;
+    --nebula-purple: #8b5cf6;
+    --cosmic-violet: #6366f1;
+    --galaxy-pink: #ec4899;
+    --star-white: #f8fafc;
+    --plasma-cyan: #06b6d4;
+    
+    /* Atmospheric Colors */
+    --space-gray: #374151;
+    --meteor-gray: #4b5563;
+    --satellite-silver: #9ca3af;
+    --moon-glow: #e5e7eb;
+    
+    /* Energy/Glow Effects */
+    --aurora-green: #10b981;
+    --solar-orange: #f59e0b;
+    --comet-yellow: #fbbf24;
+    --red-giant: #ef4444;
+    
+    /* Gradients */
+    --cosmic-gradient: linear-gradient(135deg, var(--stellar-blue), var(--nebula-purple), var(--galaxy-pink));
+    --nebula-gradient: linear-gradient(45deg, var(--deep-space), var(--cosmic-dark), var(--nebula-dark));
+    --aurora-gradient: linear-gradient(90deg, var(--stellar-blue), var(--aurora-green), var(--nebula-purple));
+    --galaxy-gradient: radial-gradient(circle, var(--cosmic-violet), var(--deep-space));
+    
+    /* Text Colors */
+    --text-primary: var(--star-white);
+    --text-secondary: var(--satellite-silver);
+    --text-muted: var(--meteor-gray);
+    --text-accent: var(--stellar-blue);
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--void-black);
+    color: var(--text-primary);
+}
+
+/* Navigation Bar Styles */
+#navigationBar a{
+    color: var(--star-white);
+}
+
+.navigation a:hover {
+        color: var(--stellar-blue);
+        text-shadow: 0 0 10px var(--stellar-blue);
+    }
+
+
+    #logo {
+        background: var(--cosmic-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        font-size: 2rem;
+        margin: 0;
+        transition: all 0.3s ease;
+    }
+
+    #logo:hover {
+        background: var(--aurora-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+    }
+
+}
