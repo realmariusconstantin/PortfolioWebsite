@@ -42,8 +42,87 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
-    background-color: var(--void-black);
+    background: radial-gradient(ellipse at center, var(--deep-space) 0%, var(--void-black) 70%);
     color: var(--text-primary);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Space Background Animation */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(2px 2px at 20px 30px, var(--star-white), transparent),
+        radial-gradient(2px 2px at 40px 70px, var(--stellar-blue), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--star-white), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--nebula-purple), transparent),
+        radial-gradient(2px 2px at 160px 30px, var(--star-white), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: twinkle 4s ease-in-out infinite alternate;
+    z-index: -2;
+}
+
+/* Additional Star Layer */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(1px 1px at 50px 50px, var(--star-white), transparent),
+        radial-gradient(1px 1px at 100px 25px, var(--galaxy-pink), transparent),
+        radial-gradient(1px 1px at 150px 75px, var(--stellar-blue), transparent),
+        radial-gradient(2px 2px at 200px 45px, var(--star-white), transparent);
+    background-repeat: repeat;
+    background-size: 250px 150px;
+    animation: twinkle 6s ease-in-out infinite alternate-reverse;
+    z-index: -1;
+}
+
+/* Floating Particles */
+.space-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -3;
+}
+
+.particle {
+    position: absolute;
+    background: var(--stellar-blue);
+    border-radius: 50%;
+    width: 1px;
+    height: 1px;
+    box-shadow: 0 0 6px var(--stellar-blue);
+    animation: float 20s infinite linear;
+}
+
+/* Twinkle Animation */
+@keyframes twinkle {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.3; }
+}
+
+/* Floating Animation */
+@keyframes float {
+    0% { transform: translateY(100vh) translateX(0px); }
+    100% { transform: translateY(-100px) translateX(50px); }
+}
+
+.page {
+    min-height: 100vh;
 }
 
 /* Navigation Bar Styles */
@@ -77,4 +156,58 @@ html, body {
         filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
     }
 
+    #name{
+        background: var(--cosmic-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 500;
+        
+    }
+
+#subtitle {
+    font-size: 1rem;
+    margin-bottom: -1.3rem;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    background: linear-gradient(var(--void-black), var(--void-black)) padding-box,
+                var(--cosmic-gradient) border-box;
+    padding: 0.75rem 1.5rem;
+    position: relative;
+    display: inline-block;
+    color: var(--stellar-blue);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+#subtitle:hover {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+    #subtitle::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 25px;
+        background: linear-gradient(135deg, var(--stellar-blue), var(--nebula-purple));
+        opacity: 0.2;
+        z-index: -1;
+    }
+
+    .homeContent p{
+        color: var(--satellite-silver);
+    }
+
+    #projects-Button, #contact-Button {
+    background-color: var(--void-black);
+        color: var(--stellar-blue);
+    }
+    
 }

@@ -5,18 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Website</title>
-    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="/nav/nav.css">
+    <link rel="stylesheet" href="/home/home.css">
     <link rel="stylesheet" href="colors.css">
-    <script src="nav.js"></script>
+    <script src="nav/nav.js"></script>
+    <script src="space-background.js"></script>
+    <script src="/home/home.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Inter:600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Space Background Particles -->
+    <div class="space-particles" id="space-particles"></div>
+    
     <div id="navigationBar">
-        <div>
-            <a href="#home">
-                <h1 id="logo">M.</h1>
-            </a>
-        </div>
         <nav class="navigation">
             <ul>
                 <li><a href="#home">Home</a></li>
@@ -33,12 +34,12 @@
             <span></span>
         </div>
     </div>  
-<!--     
-    <div class="page" id="home">  
+ 
+    <div id="home">  
         <div class="homeContent">  
             <div>  
+                <h2 id="subtitle">Full Stack Developer</h2>
                 <h1 id="nameTitle">Hi, I'm <span id="name">Marius Constantin</span></h1>  
-                <h2>Full Stack Developer</h2>  
                 <p>I create beautiful websites and applications with a focus  
                     <br> on user experience, responsive design and clean code.  
                 </p>  
@@ -51,6 +52,7 @@
         </div>
     </div>
     
+    <!--
     
     <div class="page" id="about">
         
@@ -95,8 +97,7 @@
             
         </div>
     </div>
-    
-    
+
     <div class="page" id="skills">
         <h1 id="skillsTitle">Technical <strong id="expertise">Expertise</strong></h1>
         <div class="skillsContent">

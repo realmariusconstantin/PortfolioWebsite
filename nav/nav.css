@@ -2,7 +2,7 @@
 @media (max-width: 768px) and (min-width: 320px) {
     #navigationBar {
         display: flex;
-        justify-content: space-between;
+        justify-content: right;
         align-items: center;
         padding: 1rem 2rem;
         position: relative;
@@ -23,6 +23,8 @@
         right: -100%;
         width: 70%;
         height: 100vh;
+        background: rgba(10, 10, 10, 0.9);
+        -webkit-backdrop-filter: blur(20px);
         backdrop-filter: blur(20px);
         display: flex;
         flex-direction: column;
@@ -91,14 +93,20 @@
 @media (min-width: 769px) and (max-width: 1920px) {
 #navigationBar {
     display:flex;
-    flex-direction: row;
-    gap: 30%;
+    flex-direction: row; 
+    justify-content: center;
     align-items: center;
     padding: 1rem 10rem;
     background: rgba(10, 10, 10, 0.9);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
 }
 
 #navigationBar a{
@@ -121,7 +129,7 @@
         display:flex;
         flex-direction:row;
         list-style-type:none;
-        gap: 2rem;
+        gap: 4rem;
         padding:0;
         margin:0;
     }
@@ -141,7 +149,7 @@
     #navigationBar {
     display:flex;
     flex-direction: row;
-    gap: 40%;
+    justify-content: center;
     align-items: center;
     padding: 1rem 10rem;
         background: rgba(10, 10, 10, 0.9);
@@ -172,12 +180,53 @@
         display:flex;
         flex-direction:row;
         list-style-type:none;
-        gap: 2rem;
+        gap: 4rem;
         padding:0;
         margin:0;
     }
 
     .navigation li{
         margin:0;
+    }
+}
+
+/* Persistent Logo Styles */
+#persistent-logo {
+    position: fixed !important;
+    top: 0.5rem !important;
+    left: 2rem !important;
+    z-index: 1002 !important;
+    transition: all 0.3s ease;
+}
+
+#persistent-logo a {
+    text-decoration: none;
+}
+
+#persistent-logo-text {
+    background: var(--cosmic-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#persistent-logo-text:hover {
+    background: var(--aurora-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+}
+
+/* Add top padding to body to account for fixed navbar */
+@media (min-width: 769px) {
+    body {
+        padding-top: 80px;
     }
 }
