@@ -1,7 +1,17 @@
 
 /* Mobile view */
 @media (max-width: 768px) and (min-width: 320px) {
+#aboutTitle{
+    font-size:2rem;
+    text-align:center;
+}
 
+.aboutContent{
+    display:grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap:2rem;
+    text-align:center;
+}
 }
 
 /* Desktop view 1920x1080 */
@@ -20,6 +30,8 @@
         width:90%;
         padding-left: 5em;
         padding-top: 3em;
+        text-align: center;
+    
 
     }
 
@@ -30,33 +42,11 @@
     }
     
     #aboutMe-Section{
+        font-size: 1.3rem;
     }
 
-    .personal-details {
-        border: 2px solid;
-        border-radius: 2%;
-        padding: 2rem;
-    }
 
-    #PersonalTitle {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-
-    #details{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-
-
-    }
-
-    .personal-details strong{
-        width:50%;
-        text-align: center;
-        padding: 1rem;
-    }
+   
 
 
 }
