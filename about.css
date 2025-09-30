@@ -14,8 +14,6 @@
     }
 
     .aboutContent{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
         gap: 5rem;
         width:90%;
         padding-left: 5em;
@@ -26,36 +24,18 @@
     .aboutMe{
         display:grid;
         grid-template-columns: 1fr;
+        justify-items: center;
     
     }
     
     #aboutMe-Section{
-    }
-
-    .personal-details {
-        border: 2px solid;
-        border-radius: 2%;
-        padding: 2rem;
-    }
-
-    #PersonalTitle {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-
-    #details{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-
-
-    }
-
-    .personal-details strong{
-        width:50%;
-        text-align: center;
-        padding: 1rem;
+        font-size: 1.2rem;
+        line-height: 1.8;
+        text-align: justify;
+        text-justify: inter-word;
+        color: var(--text-color);
+        max-width: 800px;
+        margin-bottom: 2rem;
     }
 
 

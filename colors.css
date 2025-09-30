@@ -14,6 +14,10 @@
     --star-white: #f8fafc;
     --plasma-cyan: #06b6d4;
     
+    --ireland: linear-gradient(135deg, #009B3A, #FFFFFF, #FF0000);
+    --romania: linear-gradient(135deg, #002B7F, #FCD116, #CE1126);  
+    --english: linear-gradient(135deg, #00247d, #ffffff, #cf142b);
+    --university: linear-gradient(135deg,);
     /* Atmospheric Colors */
     --space-gray: #374151;
     --meteor-gray: #4b5563;
@@ -37,6 +41,7 @@
     --text-secondary: var(--satellite-silver);
     --text-muted: var(--meteor-gray);
     --text-accent: var(--stellar-blue);
+
 
 html, body {
     margin: 0;
@@ -210,4 +215,39 @@ body::after {
         color: var(--stellar-blue);
     }
     
+
+    #userExperience{
+        color: var(--stellar-blue);
+    }
+
+    #ireland{
+       background: var(--ireland);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 500
+    }
+    #romania{
+       background: var(--romania);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 500
+    }
+
+    #english{
+       background: var(--english);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 500
+    }
+
+    #university{
+            background: var(--university);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 500
+        }
 }
