@@ -17,7 +17,7 @@
     --ireland: linear-gradient(135deg, #009B3A, #FFFFFF, #FF0000);
     --romania: linear-gradient(135deg, #002B7F, #FCD116, #CE1126);  
     --english: linear-gradient(135deg, #00247d, #ffffff, #cf142b);
-    --university: linear-gradient(135deg,);
+ 
     /* Atmospheric Colors */
     --space-gray: #374151;
     --meteor-gray: #4b5563;
@@ -217,7 +217,7 @@ body::after {
     
 
     #userExperience{
-        color: var(--stellar-blue);
+        color: var(--aurora-green);
     }
 
     #ireland{
@@ -243,11 +243,5 @@ body::after {
         font-weight: 500
     }
 
-    #university{
-            background: var(--university);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 500
-        }
+
 }
