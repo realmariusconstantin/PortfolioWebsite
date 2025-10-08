@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/skills/skills.css">
     <script src="nav/nav.js"></script>
     <script src="space-background.js"></script>
+    <script src="skills/skills.js"></script>
     <script src="/home/home.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Inter:600&display=swap" rel="stylesheet">
 </head>
@@ -66,7 +67,7 @@
     <div class="page" id="about">
         
         
-        <h1 id="aboutTitle">Full Stack Developer with a Passion for <strong id="userExperience">User Experience</strong></h1>
+        <h1 id="aboutTitle">Full Stack Developer with a Passion for <br> <strong id="userExperience">User Experience</strong></h1>
         
         
         <div class="aboutContent">
@@ -114,7 +115,7 @@
                             <span class="skill-percent">90%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 90%;"></div>
+                            <div class="skill-fill" data-pct="90"></div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +130,7 @@
                             <span class="skill-percent">90%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 90%;"></div>
+                            <div class="skill-fill" data-pct="90"></div>
                         </div>
                     </div>
                 </div>
@@ -144,7 +145,7 @@
                             <span class="skill-percent">70%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 70%;"></div>
+                            <div class="skill-fill" data-pct="70"></div>
                         </div>
                     </div>
                 </div>
@@ -159,7 +160,7 @@
                             <span class="skill-percent">90%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 90%;"></div>
+                            <div class="skill-fill" data-pct="90"></div>
                         </div>
                     </div>
                 </div>
@@ -174,7 +175,22 @@
                             <span class="skill-percent">80%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 80%;"></div>
+                            <div class="skill-fill" data-pct="80"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kotlin (frontend) -->
+                <div class="skill">
+                    <div id="icon">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" alt="Kotlin" class="skill-icon">
+                    </div>
+                    <div>
+                        <div class="skill-header">
+                            <span class="skill-name">Kotlin</span>
+                            <span class="skill-percent">40%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-pct="40"></div>
                         </div>
                     </div>
                 </div>
@@ -192,7 +208,7 @@
                             <span class="skill-percent">60%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 60%;"></div>
+                            <div class="skill-fill" data-pct="60"></div>
                         </div>
                     </div>
                 </div>
@@ -207,7 +223,7 @@
                             <span class="skill-percent">85%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 85%;"></div>
+                            <div class="skill-fill" data-pct="85"></div>
                         </div>
                     </div>
                 </div>
@@ -222,15 +238,28 @@
                             <span class="skill-percent">80%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-fill" style="--pct: 80%;"></div>
+                            <div class="skill-fill" data-pct="80"></div>
+                        </div>
+                    </div>  
+                </div>
+                <!-- PHP (backend) -->
+                <div class="skill">
+                    <div id="icon">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" class="skill-icon">
+                    </div>
+                    <div>
+                        <div class="skill-header">
+                            <span class="skill-name">PHP</span>
+                            <span class="skill-percent">60%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-pct="60"></div>
                         </div>
                     </div>  
                 </div>
             </div>
         </div>
     </div>
-
-<!--  
     <div class="page" id="projects">
         <h1 id="projectsTitle">My <strong id="expertise">Projects</strong></h1>
         <div class="projectsContent">
@@ -317,4 +346,6 @@
     </footer>
 </body>
 
-</html> -->
+    <script src="site/site-interactions.js"></script>
+
+</html>

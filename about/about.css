@@ -76,9 +76,8 @@
 
     .aboutContent{
         gap: 5rem;
-        width:90%;
-        padding-left: 5em;
-        padding-top: 3em;
+        width:100%;
+        text-align: center;
 
     }
 
@@ -92,7 +91,7 @@
     #aboutMe-Section{
         font-size: 1.2rem;
         line-height: 1.8;
-        text-align: justify;
+        margin-top: 1rem;
         text-justify: inter-word;
         color: var(--text-color);
         max-width: 800px;
@@ -126,11 +125,9 @@
     }
 
     .aboutContent{
-        gap: 7rem;
-        width:80%;
-        padding-left: 10em;
-        padding-top: 5em;
-
+        gap: 5rem;
+        width:100%;
+        text-align: center;
     }
 
     .aboutMe{
@@ -143,7 +140,7 @@
     #aboutMe-Section{
         font-size: 1.5rem;
         line-height: 1.8;
-        text-align: justify;
+       margin-top: 1rem;
         text-justify: inter-word;
         color: var(--text-color);
         max-width: 1000px;
