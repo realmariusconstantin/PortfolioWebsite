@@ -1,30 +1,75 @@
-/* Site interactions: back-to-top, scrollspy, and helpful utilities */
+/* Site interactions: Sidebar, Mobile Drawer, Scrollspy, and Utilities */
 (function(){
     document.addEventListener('DOMContentLoaded', () => {
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        /* --- Back to top button --- */
+        // --- Navigation Elements ---
+        const sidebar = document.getElementById('sidebar');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const drawerToggle = document.getElementById('drawer-toggle');
+        const drawerClose = document.getElementById('drawer-close');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // --- Mobile Drawer Logic ---
+        const toggleDrawer = (open) => {
+            mobileDrawer.classList.toggle('open', open);
+            drawerOverlay.classList.toggle('open', open);
+            document.body.style.overflow = open ? 'hidden' : '';
+        };
+
+        if (drawerToggle) drawerToggle.addEventListener('click', () => toggleDrawer(true));
+        if (drawerOverlay) drawerOverlay.addEventListener('click', () => toggleDrawer(false));
+
+        // Close drawer on link click
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) toggleDrawer(false);
+            });
+        });
+
+        // --- Scrollspy (highlight active nav link) ---
+        const sections = document.querySelectorAll('section[id]');
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -20% 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // --- Back to top button ---
         const backToTop = document.createElement('button');
         backToTop.id = 'back-to-top';
         backToTop.title = 'Back to top';
-        backToTop.innerHTML = '↑';
+        backToTop.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
         backToTop.style.cssText = `
             position: fixed;
-            right: 18px;
-            bottom: 18px;
-            width: 44px;
-            height: 44px;
-            border-radius: 999px;
-            border: none;
-            background: rgba(255,255,255,0.06);
-            color: white;
+            right: 24px;
+            bottom: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
             display: none;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
             cursor: pointer;
-            z-index: 2000;
-            backdrop-filter: blur(6px);
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s ease;
         `;
         document.body.appendChild(backToTop);
 
@@ -33,52 +78,77 @@
         });
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) backToTop.style.display = 'flex';
-            else backToTop.style.display = 'none';
+            if (window.scrollY > 600) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
         }, { passive: true });
 
-        /* --- Scrollspy (highlight active nav link) --- */
-        const sections = Array.from(document.querySelectorAll('.page'));
-        const navLinks = Array.from(document.querySelectorAll('.navigation a'));
+        // --- Contact Form Validation & Feedback ---
+        const contactForm = document.querySelector('.contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = contactForm.querySelector('button[type="submit"]');
+                const originalText = btn.innerText;
+                
+                btn.innerText = 'Sending...';
+                btn.disabled = true;
 
-        if (sections.length && navLinks.length) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        navLinks.forEach(a => {
-                            if (a.getAttribute('href') === '#' + id) a.classList.add('active');
-                            else a.classList.remove('active');
-                        });
+                // Simulate API call
+                setTimeout(() => {
+                    btn.innerText = 'Message Sent!';
+                    btn.style.background = '#10b981';
+                    contactForm.reset();
+                    
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 3000);
+                }, 1500);
+            });
+        }
+    });
+})();
                     }
                 });
-            }, { threshold: 0.45 });
 
-            sections.forEach(s => observer.observe(s));
+                if (isValid) {
+                    const originalText = sendBtn.innerText;
+                    sendBtn.innerText = 'Sending...';
+                    sendBtn.disabled = true;
+
+                    // Simulate API call
+                    setTimeout(() => {
+                        sendBtn.innerText = 'Message Sent! ✓';
+                        sendBtn.style.background = '#10b981'; // Success green
+                        contactForm.reset();
+
+                        setTimeout(() => {
+                            sendBtn.innerText = originalText;
+                            sendBtn.style.background = '';
+                            sendBtn.disabled = false;
+                        }, 3000);
+                    }, 1500);
+                }
+            });
         }
-
-        /* --- Close mobile nav when clicking outside (extra safety) --- */
-        document.addEventListener('click', (e) => {
-            const nav = document.querySelector('.navigation');
-            const burger = document.querySelector('.burger-menu');
-            if (!nav || !burger) return;
-
-            if (!nav.contains(e.target) && !burger.contains(e.target)) {
-                nav.classList.remove('active');
-                burger.classList.remove('active');
-            }
-        });
-
-        /* --- Simple keyboard shortcut: press 'g' then 's' to go to Skills (dev shortcut) --- */
-        let keyBuffer = '';
-        window.addEventListener('keydown', (e) => {
-            keyBuffer += e.key.toLowerCase();
-            if (keyBuffer.endsWith('gs')) {
-                const el = document.querySelector('#skills');
-                if (el) el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
-            }
-            // cap buffer
-            if (keyBuffer.length > 10) keyBuffer = keyBuffer.slice(-10);
-        });
+    });
+})();
+                if (isValid) {
+                    const originalText = sendBtn.innerText;
+                    sendBtn.innerText = 'Message Sent! ✨';
+                    sendBtn.style.background = 'var(--accent-neon)';
+                    contactForm.reset();
+                    
+                    setTimeout(() => {
+                        sendBtn.innerText = originalText;
+                        sendBtn.style.background = 'var(--accent-pink)';
+                    }, 3000);
+                }
+            });
+        }
     });
 })();

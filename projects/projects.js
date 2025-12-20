@@ -1,9 +1,9 @@
-// Skills section entrance animations
+// Projects section entrance animations
 document.addEventListener('DOMContentLoaded', () => {
-    const skillsSection = document.getElementById('skills');
-    if (!skillsSection) return;
+    const projectsSection = document.getElementById('projects');
+    if (!projectsSection) return;
 
-    const skillCards = skillsSection.querySelectorAll('.skill-card');
+    const projectCards = projectsSection.querySelectorAll('.project-card');
 
     const observerOptions = {
         threshold: 0.1,
@@ -20,11 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    skillCards.forEach((card, index) => {
+    projectCards.forEach((card, index) => {
         card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = `all 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.05}s`;
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.1}s`;
         observer.observe(card);
     });
 });
-
