@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romish - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mock-style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="mock-body">
+    <!-- Sidebar -->
+    <aside class="mock-sidebar">
+        <div class="mock-logo">Romish</div>
+        <nav>
+            <a href="dashboard.html" class="mock-nav-item active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Dashboard
+            </a>
+            <a href="match.html" class="mock-nav-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                Matches
+            </a>
+            <a href="queue.html" class="mock-nav-item">
+                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Queue
+            </a>
+            <a href="#" class="mock-nav-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+                Leaderboard
+            </a>
+        </nav>
+        
+        <div class="mock-user-profile">
+            <div class="mock-avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Marius')"></div>
+            <div>
+                <div style="font-weight: 600; font-size: 0.9rem;">Marius</div>
+                <div style="color: var(--romish-accent); font-size: 0.8rem; font-weight: 700;">1450 ELO</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="mock-main">
+        <header class="mock-header">
+            <h1 class="mock-page-title">Dashboard</h1>
+            <div class="mock-status-pill">
+                <div class="mock-status-dot"></div>
+                124 Online
+            </div>
+        </header>
+
+        <section class="stat-grid">
+            <div class="stat-box">
+                <div class="stat-label">Current ELO</div>
+                <div class="stat-value">1,450</div>
+                <div style="color: var(--romish-success); font-size: 0.8rem; margin-top: 5px;">▲ 24 this week</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Win Rate</div>
+                <div class="stat-value">54%</div>
+                <div class="progress-bar-bg" style="height: 4px; background: rgba(255,255,255,0.1); margin-top: 10px; border-radius: 2px;">
+                    <div style="width: 54%; height: 100%; background: var(--romish-accent); border-radius: 2px;"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Matches Played</div>
+                <div class="stat-value">86</div>
+                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px;">42 Wins / 44 Losses</div>
+            </div>
+        </section>
+
+        <button class="queue-btn" onclick="toggleQueue(this)">
+            Find Match
+        </button>
+
+        <section class="mock-card">
+            <div class="mock-card-header">
+                <h3 class="mock-card-title">Live Matches</h3>
+                <a href="#" style="color: var(--romish-accent); text-decoration: none; font-size: 0.875rem;">View All</a>
+            </div>
+            
+            <div class="match-list-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--glass-border);">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="color: var(--romish-danger); font-weight: 700;">LIVE</span>
+                    <span style="color: var(--text-secondary);">de_inferno</span>
+                </div>
+                <div style="font-weight: 700;">
+                    Team A <span style="color: var(--romish-accent); margin: 0 10px;">8 : 4</span> Team B
+                </div>
+                <button style="padding: 4px 12px; background: rgba(255,255,255,0.1); border: none; border-radius: 4px; color: white; cursor: pointer;">Spectate</button>
+            </div>
+             <div class="match-list-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--glass-border);">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="color: var(--romish-danger); font-weight: 700;">LIVE</span>
+                    <span style="color: var(--text-secondary);">de_mirage</span>
+                </div>
+                <div style="font-weight: 700;">
+                    Team X <span style="color: var(--romish-accent); margin: 0 10px;">12 : 11</span> Team Y
+                </div>
+                <button style="padding: 4px 12px; background: rgba(255,255,255,0.1); border: none; border-radius: 4px; color: white; cursor: pointer;">Spectate</button>
+            </div>
+        </section>
+        
+        <section class="mock-card">
+            <div class="mock-card-header">
+                <h3 class="mock-card-title">Recent Activity</h3>
+            </div>
+             <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8;">
+                <div style="border-left: 2px solid var(--romish-success); padding-left: 10px; margin-bottom: 10px;">
+                    <span style="color: white; font-weight: 600;">Won match</span> on Ancient <span style="color: var(--romish-success);">(+25 ELO)</span> - 2 hours ago
+                </div>
+                <div style="border-left: 2px solid var(--romish-danger); padding-left: 10px; margin-bottom: 10px;">
+                    <span style="color: white; font-weight: 600;">Lost match</span> on Vertigo <span style="color: var(--romish-danger);">(-23 ELO)</span> - 5 hours ago
+                </div>
+             </div>
+        </section>
+    </main>
+
+    <script>
+        function toggleQueue(btn) {
+            btn.classList.toggle('in-queue');
+            if (btn.classList.contains('in-queue')) {
+                btn.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span>Searching...</span>
+                        <span id="timer">00:00</span>
+                    </div>
+                `;
+                startTimer();
+            } else {
+                btn.innerText = 'Find Match';
+                stopTimer();
+            }
+        }
+
+        let timerInterval;
+        function startTimer() {
+            let seconds = 0;
+            const timerEl = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                if(timerEl) timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+    </script>
+</body>
+</html>

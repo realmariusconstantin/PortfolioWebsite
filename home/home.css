@@ -37,10 +37,87 @@
 .home-cta {
     display: flex;
     gap: var(--space-4);
-    flex-wrap: wrap;
 }
 
-@media (max-width: 767px) {
+.home-cta .btn {
+    flex: 0 0 auto;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    opacity: 0.6;
+    transition: var(--transition-base);
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
+}
+
+.mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 20px;
+    position: relative;
+}
+
+.wheel {
+    width: 4px;
+    height: 8px;
+    background: var(--accent-primary);
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll-wheel 2s infinite;
+}
+
+.arrows span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-bottom: 2px solid var(--text-secondary);
+    border-right: 2px solid var(--text-secondary);
+    transform: rotate(45deg);
+    margin: -4px;
+    animation: scroll-arrows 2s infinite;
+}
+
+.arrows span:nth-child(2) { animation-delay: 0.2s; }
+.arrows span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes scroll-wheel {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(15px); }
+}
+
+@keyframes scroll-arrows {
+    0% { opacity: 0; transform: rotate(45deg) translate(-10px, -10px); }
+    100% { opacity: 1; transform: rotate(45deg) translate(0, 0); }
+}
+
+@media (max-width: 768px) {
+    .home-title {
+        font-size: 3rem; 
+    }
+    
+    .scroll-indicator {
+        bottom: var(--space-4); /* Move closer to bottom */
+    }
+}
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(45deg) translate(10px, 10px); }
+}
+
+@media (min-width: 140px) and (max-width: 768px) {
     #home {
         text-align: center;
         justify-content: center;
@@ -50,14 +127,29 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        text-align: center;
+    }
+    
+    .home-subtitle {
+        text-align: center;
+    }
+    
+    .home-title {
+        text-align: center;
+        font-size: 2.5rem;
     }
     
     .home-cta {
         justify-content: center;
+        gap: var(--space-4);
     }
     
     .home-description {
         margin-left: auto;
         margin-right: auto;
+        text-align: center;
     }
 }
+
+
+

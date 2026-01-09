@@ -13,15 +13,32 @@
 
         // --- Mobile Drawer Logic ---
         const toggleDrawer = (open) => {
-            mobileDrawer.classList.toggle('open', open);
-            drawerOverlay.classList.toggle('open', open);
-            document.body.style.overflow = open ? 'hidden' : '';
+            if (!mobileDrawer || !drawerOverlay) return;
+            
+            if (open) {
+                mobileDrawer.classList.add('open');
+                drawerOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileDrawer.classList.remove('open');
+                drawerOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
         };
 
-        if (drawerToggle) drawerToggle.addEventListener('click', () => toggleDrawer(true));
-        if (drawerOverlay) drawerOverlay.addEventListener('click', () => toggleDrawer(false));
+        if (drawerToggle) {
+            drawerToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent bubbling issues
+                const isOpen = mobileDrawer && mobileDrawer.classList.contains('open');
+                toggleDrawer(!isOpen);
+            });
+        }
+        
+        if (drawerOverlay) {
+            drawerOverlay.addEventListener('click', () => toggleDrawer(false));
+        }
 
-        // Close drawer on link click
+        // Close drawer on link click (mobile)
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 1024) toggleDrawer(false);
@@ -52,7 +69,10 @@
         const backToTop = document.createElement('button');
         backToTop.id = 'back-to-top';
         backToTop.title = 'Back to top';
-        backToTop.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
+        backToTop.setAttribute('aria-label', 'Back to top');
+        backToTop.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
+        
+        // CSS for Back to Top (Injected here)
         backToTop.style.cssText = `
             position: fixed;
             right: 24px;
@@ -61,7 +81,7 @@
             height: 48px;
             border-radius: 12px;
             border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
+            background: rgba(10, 10, 15, 0.6);
             color: var(--text-primary);
             display: none;
             align-items: center;
@@ -70,6 +90,7 @@
             z-index: 1000;
             backdrop-filter: blur(12px);
             transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         `;
         document.body.appendChild(backToTop);
 
@@ -85,21 +106,47 @@
             }
         }, { passive: true });
 
-        // --- Contact Form Validation & Feedback ---
+        // --- Reveal on Scroll ---
+        const revealElements = document.querySelectorAll('.page > .container');
+        
+        // Set initial state for reveal elements
+        revealElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- Contact Form Handling ---
         const contactForm = document.querySelector('.contact-form');
         if (contactForm) {
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const btn = contactForm.querySelector('button[type="submit"]');
+                if (!btn) return;
+                
                 const originalText = btn.innerText;
                 
                 btn.innerText = 'Sending...';
                 btn.disabled = true;
+                btn.style.opacity = '0.7';
 
                 // Simulate API call
                 setTimeout(() => {
-                    btn.innerText = 'Message Sent!';
-                    btn.style.background = '#10b981';
+                    btn.innerText = 'Message Sent! ✓';
+                    btn.style.background = 'var(--accent-primary)';
+                    btn.style.opacity = '1';
                     contactForm.reset();
                     
                     setTimeout(() => {
@@ -108,46 +155,6 @@
                         btn.disabled = false;
                     }, 3000);
                 }, 1500);
-            });
-        }
-    });
-})();
-                    }
-                });
-
-                if (isValid) {
-                    const originalText = sendBtn.innerText;
-                    sendBtn.innerText = 'Sending...';
-                    sendBtn.disabled = true;
-
-                    // Simulate API call
-                    setTimeout(() => {
-                        sendBtn.innerText = 'Message Sent! ✓';
-                        sendBtn.style.background = '#10b981'; // Success green
-                        contactForm.reset();
-
-                        setTimeout(() => {
-                            sendBtn.innerText = originalText;
-                            sendBtn.style.background = '';
-                            sendBtn.disabled = false;
-                        }, 3000);
-                    }, 1500);
-                }
-            });
-        }
-    });
-})();
-                if (isValid) {
-                    const originalText = sendBtn.innerText;
-                    sendBtn.innerText = 'Message Sent! ✨';
-                    sendBtn.style.background = 'var(--accent-neon)';
-                    contactForm.reset();
-                    
-                    setTimeout(() => {
-                        sendBtn.innerText = originalText;
-                        sendBtn.style.background = 'var(--accent-pink)';
-                    }, 3000);
-                }
             });
         }
     });

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!contactSection) return;
 
     // Entrance Animations
-    const elements = contactSection.querySelectorAll('.info-card, .social-container, .contact-form-container');
+    const elements = contactSection.querySelectorAll('.contact-header, .contact-form-container, .contact-quick-info');
 
     const observerOptions = {
         threshold: 0.1,
@@ -28,33 +28,68 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
+    // Auto-expanding Textarea
+    const textarea = document.getElementById('contact-message');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+
     // Form Handling
-    const contactForm = contactSection.querySelector('.contact-form');
+    const contactForm = document.getElementById('contact-form');
+    const successMessage = document.getElementById('contact-success');
+
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalContent = submitBtn.innerHTML;
+            const submitBtn = contactForm.querySelector('.btn-pill');
+            const formData = new FormData(contactForm);
             
             // Loading state
+            submitBtn.classList.add('loading');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>Sending...</span><svg class="spinner" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>';
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
 
-            // Success state
-            submitBtn.innerHTML = '<span>Message Sent!</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-            submitBtn.style.background = 'var(--accent-secondary)';
-            
-            contactForm.reset();
-
-            // Reset button after 3 seconds
-            setTimeout(() => {
+                if (response.ok) {
+                    // Show Success Message
+                    contactForm.style.display = 'none';
+                    successMessage.classList.add('active');
+                    contactForm.reset();
+                    if (textarea) textarea.style.height = 'auto';
+                } else {
+                    const data = await response.json();
+                    if (Object.hasOwn(data, 'errors')) {
+                        alert(data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        alert("Oops! There was a problem submitting your form");
+                    }
+                }
+            } catch (error) {
+                alert("Oops! There was a problem submitting your form");
+            } finally {
+                submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalContent;
-                submitBtn.style.background = '';
-            }, 3000);
+            }
         });
     }
+
+    window.resetForm = () => {
+        if (contactForm && successMessage) {
+            successMessage.classList.remove('active');
+            contactForm.style.display = 'flex';
+            const submitBtn = contactForm.querySelector('.btn-pill');
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        }
+    };
 });
