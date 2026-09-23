@@ -17,7 +17,7 @@ const profiles = [
 <template>
   <section id="contact" aria-labelledby="contact-title" class="border-t border-line">
     <div class="container-content py-20 sm:py-28">
-      <div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-16">
         <div>
           <SectionHeading id="contact-title" :index="5" eyebrow="Contact" v-bind="sections.contact" />
           <p v-reveal class="-mt-4 max-w-md leading-relaxed text-pretty text-muted">{{ contact.body }}</p>

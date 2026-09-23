@@ -4,6 +4,7 @@ export const imageMeta = {
     "width": 780,
     "height": 330,
     "widths": [
+      480,
       780
     ]
   },
@@ -11,6 +12,7 @@ export const imageMeta = {
     "width": 1872,
     "height": 957,
     "widths": [
+      480,
       800,
       1600
     ]
@@ -19,6 +21,7 @@ export const imageMeta = {
     "width": 1874,
     "height": 950,
     "widths": [
+      480,
       800,
       1600
     ]
@@ -27,6 +30,7 @@ export const imageMeta = {
     "width": 1868,
     "height": 949,
     "widths": [
+      480,
       800,
       1600
     ]
@@ -35,6 +39,7 @@ export const imageMeta = {
     "width": 1870,
     "height": 950,
     "widths": [
+      480,
       800,
       1600
     ]
@@ -43,6 +48,7 @@ export const imageMeta = {
     "width": 2515,
     "height": 1312,
     "widths": [
+      480,
       800,
       1600
     ]

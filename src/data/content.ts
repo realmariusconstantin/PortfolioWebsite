@@ -89,7 +89,6 @@ export const isTodo = (text: string) => text.trimStart().startsWith('TODO')
 // ---------------------------------------------------------------------------
 
 export const hero = {
-  eyebrow: 'Full-Stack Developer',
   headline: 'I build full-stack web apps, from real-time interfaces to the auth and data layers behind them.',
   intro:
     'My main stack is Vue, Node.js and TypeScript. My latest project, Romish, runs CS2 10-man matches end to end: sign-in, queue, draft, map veto and Elo.',

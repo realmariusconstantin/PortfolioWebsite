@@ -36,12 +36,9 @@ const linkTo = (id: string) => ({ path: '/', hash: `#${id}` })
     </a>
 
     <div class="container-content flex h-16 items-center justify-between gap-4">
-      <RouterLink
-        to="/"
-        class="font-mono text-base font-semibold tracking-tight"
-        :aria-label="`${person.name}, home`"
-      >
+      <RouterLink to="/" class="font-mono text-base font-semibold tracking-tight">
         {{ person.initials }}<span class="text-accent">.</span>
+        <span class="sr-only">{{ person.name }}, home</span>
       </RouterLink>
 
       <nav aria-label="Primary" class="hidden md:block">

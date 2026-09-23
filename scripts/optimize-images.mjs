@@ -6,7 +6,7 @@ import sharp from 'sharp'
 
 const SRC = 'assets-src'
 const OUT = 'public/images'
-const WIDTHS = [800, 1600]
+const WIDTHS = [480, 800, 1600]
 
 /** Regions (in original pixels) blurred before export to hide personal data. */
 const images = {
@@ -58,6 +58,32 @@ for (const [name, opts] of Object.entries(images)) {
 
 // Icons from the Romish helmet artwork
 await sharp(`${SRC}/romish-helmet.png`).resize(96).webp({ quality: 85 }).toFile(`${OUT}/romish-helmet-96.webp`)
+
+// Site icons from assets-src/icon-source.png (rendered from scripts/og/icon.html)
+const icon = `${SRC}/icon-source.png`
+await sharp(icon).resize(180).png().toFile('public/apple-touch-icon.png')
+await sharp(icon).resize(192).png().toFile('public/icon-192.png')
+await sharp(icon).resize(512).png().toFile('public/icon-512.png')
+
+// favicon.ico: an ICO container holding 16, 32 and 48px PNGs
+const sizes = [16, 32, 48]
+const pngs = await Promise.all(sizes.map((s) => sharp(icon).resize(s).png().toBuffer()))
+const header = Buffer.alloc(6 + 16 * sizes.length)
+header.writeUInt16LE(0, 0)
+header.writeUInt16LE(1, 2)
+header.writeUInt16LE(sizes.length, 4)
+let offset = header.length
+sizes.forEach((s, i) => {
+  const e = 6 + i * 16
+  header.writeUInt8(s, e)
+  header.writeUInt8(s, e + 1)
+  header.writeUInt16LE(1, e + 4)
+  header.writeUInt16LE(32, e + 6)
+  header.writeUInt32LE(pngs[i].length, e + 8)
+  header.writeUInt32LE(offset, e + 12)
+  offset += pngs[i].length
+})
+await writeFile('public/favicon.ico', Buffer.concat([header, ...pngs]))
 
 await writeFile(
   'src/data/images.generated.ts',

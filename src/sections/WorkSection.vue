@@ -68,7 +68,7 @@ const published = projects.filter((p) => !p.draft)
 
     <!-- Other projects -->
     <h3 v-reveal class="mt-16 eyebrow">More projects</h3>
-    <ul class="mt-6 grid gap-4 md:grid-cols-2">
+    <ul class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
       <li
         v-for="project in published"
         :key="project.slug"
@@ -108,7 +108,7 @@ const published = projects.filter((p) => !p.draft)
           class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover"
         >
           <AppIcon name="github" :size="16" />
-          {{ person.github.replace('https://', '') }}
+          <span class="break-all">{{ person.github.replace('https://', '') }}</span>
           <span class="sr-only">(opens in a new tab)</span>
         </a>
       </li>

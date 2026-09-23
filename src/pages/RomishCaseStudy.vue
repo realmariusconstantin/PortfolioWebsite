@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useHead } from '@unhead/vue'
+import { useSeo } from '@/composables/useSeo'
 import { RouterLink } from 'vue-router'
 import AppIcon from '@/components/AppIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,11 +10,24 @@ import ImageLightbox from '@/components/ImageLightbox.vue'
 import ResponsiveImage from '@/components/ResponsiveImage.vue'
 import TechChip from '@/components/TechChip.vue'
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.vue'
-import { featuredProject, isTodo, projects, romishCaseStudy as cs, site, type Screenshot } from '@/data/content'
+import { featuredProject, isTodo, person, projects, romishCaseStudy as cs, site, type Screenshot } from '@/data/content'
 
-useHead({
+useSeo({
   title: cs.seo.title,
-  meta: [{ name: 'description', content: cs.seo.description }],
+  description: cs.seo.description,
+  path: '/projects/romish',
+  type: 'article',
+  image: cs.seo.ogImage,
+  imageAlt: 'Romish case study',
+  jsonLd: {
+    '@type': 'CreativeWork',
+    name: cs.title,
+    headline: cs.seo.title,
+    description: cs.seo.description,
+    url: `${site.url}/projects/romish`,
+    author: { '@type': 'Person', name: person.name, url: site.url },
+    keywords: featuredProject.stack.join(', '),
+  },
 })
 
 const lightbox = ref<InstanceType<typeof ImageLightbox>>()
