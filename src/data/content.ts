@@ -72,6 +72,18 @@ export const nav = [
   { id: 'contact', label: 'Contact' },
 ] as const
 
+/** Heading copy for each home page section, keyed by section id. */
+export const sections = {
+  work: { title: 'Selected work', intro: "Things I've designed, built and shipped, starting with the one I'm proudest of." },
+  skills: { title: 'Skills', intro: 'The tools I use, grouped by where they sit in the stack.' },
+  about: { title: 'About me', intro: '' },
+  experience: { title: 'Experience & education', intro: '' },
+  contact: { title: "Let's talk", intro: '' },
+} satisfies Record<(typeof nav)[number]['id'], { title: string; intro: string }>
+
+/** True for placeholder copy that must not render. */
+export const isTodo = (text: string) => text.trimStart().startsWith('TODO')
+
 // ---------------------------------------------------------------------------
 // Hero
 // ---------------------------------------------------------------------------
@@ -120,24 +132,45 @@ export const projects: Project[] = [
     ],
   },
   {
-    // TODO: add a real project (title, one-line summary, stack, links), then remove `draft`.
-    slug: 'todo-project-1',
-    title: 'TODO: project title',
-    summary: 'TODO: one-line description of what it does and who it is for.',
-    stack: ['TODO'],
-    links: [],
+    // TODO: prefilled from the public repo. Confirm your role (the repo has a MariusFrontend branch),
+    // the backend stack, and whether there is a live demo, then remove `draft`.
+    // SECURITY: the repo README publishes an admin email + password. Remove it and rotate the password.
+    slug: 'renova',
+    title: 'Renova (TUSBinRight+)',
+    summary:
+      'Team-built recycling web app: scan a barcode or pick an item, and it tells you which bin to use and how to prepare it, with location-specific rules and an admin panel.',
+    stack: ['Vue 3', 'Vite', 'Chart.js', 'Barcode scanning', 'TODO: backend (PHP / MySQL?)'],
+    links: [{ label: 'GitHub', href: 'https://github.com/realmariusconstantin/TUSBinRIght-', external: true }],
     draft: true,
   },
   {
-    // TODO: add a real project, e.g. a Kotlin/Firebase or Spring Boot college project, then remove `draft`.
-    slug: 'todo-project-2',
-    title: 'TODO: project title',
-    summary: 'TODO: one-line description.',
-    stack: ['TODO'],
-    links: [],
+    // TODO: prefilled from the public repo. The README's tech stack section is still a template; confirm the stack
+    // and your part in the team, then remove `draft`.
+    slug: 'environmental-impact-tracker',
+    title: 'Environmental Impact Tracker',
+    summary:
+      'Team project that estimates your carbon footprint from daily activities and charts your progress over time.',
+    stack: ['Vue.js', 'TODO'],
+    links: [
+      { label: 'GitHub', href: 'https://github.com/realmariusconstantin/EnvironmentalImpactTracker', external: true },
+    ],
+    draft: true,
+  },
+  {
+    // TODO: prefilled from the public repo (no README yet). Add a one-line summary, then remove `draft`.
+    slug: 'banking-system',
+    title: 'Banking System',
+    summary: 'TODO: one-line description. Java project for TUS.',
+    stack: ['Java'],
+    links: [{ label: 'GitHub', href: 'https://github.com/realmariusconstantin/Banking-System-Project', external: true }],
     draft: true,
   },
 ]
+
+export const moreOnGithub = {
+  title: 'More on GitHub',
+  body: 'College coursework and team projects in Java and Vue.',
+}
 
 // ---------------------------------------------------------------------------
 // Skills
@@ -217,6 +250,9 @@ export const timeline: {
 // ---------------------------------------------------------------------------
 
 export const contact = {
-  heading: "Let's talk",
-  body: "I'm looking for full-stack roles, internships and graduate positions in Ireland or remote. If you're hiring, or just want to talk about something you're building, send me a message.",
+  body: "I'm looking for full-stack roles, internships and graduate positions in Ireland or remote. If you're hiring, or want to talk about something you're building, send me a message.",
+  form: {
+    success: "Thanks, your message is on its way. I'll get back to you by email.",
+    error: "Something went wrong and your message wasn't sent. Please try again, or email me directly.",
+  },
 }

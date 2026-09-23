@@ -7,7 +7,7 @@ function getObserver() {
     (entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue
-        entry.target.classList.add('is-visible')
+        (entry.target as HTMLElement).dataset.revealed = ''
         observer!.unobserve(entry.target)
       }
     },
