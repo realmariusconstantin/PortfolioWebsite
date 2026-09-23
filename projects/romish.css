@@ -1,0 +1,402 @@
+/* Romish Case Study Styles */
+
+:root {
+    --cs-bg: #020204;
+    --cs-accent: var(--accent-primary);
+}
+
+body {
+    background-color: var(--cs-bg);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* Sticky Nav */
+.case-study-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.case-study-nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.back-link:hover {
+    color: var(--accent-primary);
+    transform: translateX(-4px);
+}
+
+/* Hero Section */
+.cs-hero {
+    padding: var(--space-24) 0 var(--space-12);
+    text-align: center;
+    position: relative;
+}
+
+.cs-title {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 800;
+    margin-bottom: var(--space-4);
+    background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
+
+.cs-subtitle {
+    font-size: var(--fs-xl);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto var(--space-8);
+    line-height: 1.5;
+}
+
+/* Overview Section */
+.cs-overview {
+    padding: var(--space-16) 0;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+    align-items: center;
+}
+
+@media (min-width: 992px) {
+    .overview-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.overview-text h2 {
+    margin-bottom: var(--space-6);
+    font-size: var(--fs-3xl);
+}
+
+.overview-text p {
+    font-size: var(--fs-lg);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+}
+
+.feature-mini-card {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+}
+
+.feature-title {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-2);
+    font-size: var(--fs-base);
+    font-weight: 700;
+}
+
+.feature-mini-card p {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Walkthrough Sections */
+.cs-walkthrough {
+    padding: var(--space-16) 0;
+}
+
+.walkthrough-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+    align-items: center;
+    margin-bottom: var(--space-32);
+}
+
+@media (min-width: 992px) {
+    .walkthrough-section {
+        grid-template-columns: 1fr 1.2fr;
+    }
+    
+    .walkthrough-section.reverse {
+        direction: rtl;
+    }
+    
+    .walkthrough-section.reverse .wt-text,
+    .walkthrough-section.reverse .wt-visual {
+        direction: ltr;
+    }
+}
+
+.wt-title {
+    font-size: var(--fs-3xl);
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.wt-text p {
+    font-size: var(--fs-lg);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+}
+
+.wt-bullets {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.wt-bullets li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: var(--fs-base);
+}
+
+
+.wt-bullets li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-primary);
+}
+
+.wt-visual {
+    position: relative;
+}
+
+.screenshot-container {
+    aspect-ratio: 16/10;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-base);
+}
+
+.screenshot-container:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.screenshot-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    opacity: 0.3;
+}
+
+.screenshot-placeholder span {
+    font-weight: 700;
+    font-size: var(--fs-xl);
+}
+
+.project-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Footer Section */
+.cs-footer {
+    padding: var(--space-32) 0;
+    text-align: center;
+}
+
+.footer-card {
+    padding: var(--space-16);
+    border-radius: var(--radius-2xl);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer-card h2 {
+    font-size: var(--fs-4xl);
+    margin-bottom: var(--space-4);
+}
+
+.footer-card p {
+    font-size: var(--fs-xl);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .footer-actions {
+        flex-direction: column;
+    }
+    
+    .footer-actions .btn {
+        width: 100%;
+    }
+
+    /* Mobile Enhancements */
+    .cs-hero {
+        padding: var(--space-8) 0 var(--space-6);
+    }
+    
+    .cs-title {
+        font-size: 2.5rem;
+        line-height: 1.1;
+    }
+
+    .cs-tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-2);
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .wt-text p {
+        font-size: var(--fs-base);
+    }
+    
+    .wt-bullets li {
+        font-size: var(--fs-sm);
+    }
+
+    .walkthrough-section {
+        margin-bottom: var(--space-16);
+        gap: var(--space-6);
+    }
+
+    /* Remove visual clutter on mobile */
+    .feature-mini-card {
+        padding: var(--space-4);
+    }
+
+    /* Better screenshot container fitting */
+    .screenshot-container {
+        border-radius: var(--radius-md);
+        box-shadow: none; /* Reduce performance hit/clutter */
+    }
+
+    /* Adjust nav for mobile */
+    .case-study-nav {
+        padding: var(--space-2) 0;
+    }
+    
+    .nav-actions {
+        display: none; /* Hide primary CTA in nav if space is tight, or just reduce button size */
+    }
+
+    .footer-card {
+        padding: var(--space-8);
+    }
+}
+
+/* Lightbox Styles */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.lightbox-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.lightbox-image {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+
+.lightbox-overlay.active .lightbox-image {
+    transform: scale(1);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.project-screenshot {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.screenshot-container:hover .project-screenshot {
+    transform: scale(1.02);
+}

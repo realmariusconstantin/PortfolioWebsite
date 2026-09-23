@@ -1,103 +1,37 @@
-// Burger Menu Toggle Functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const burgerMenu = document.querySelector('.burger-menu');
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.getElementById('navigationBar');
+    const burger = document.querySelector('.burger-menu');
     const navigation = document.querySelector('.navigation');
-    const navigationBar = document.querySelector('#navigationBar');
-    
-    // Desktop navbar scroll behavior
-    let lastScrollTop = 0;
-    let isNavbarHidden = false;
-    
-    function handleDesktopNavbar() {
-        if (window.innerWidth > 768) {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Hide navbar when scrolling down
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                if (!isNavbarHidden) {
-                    navigationBar.style.transform = 'translateY(-100%)';
-                    isNavbarHidden = true;
-                }
-            }
-            // Show navbar when scrolling up
-            else if (scrollTop < lastScrollTop) {
-                if (isNavbarHidden) {
-                    navigationBar.style.transform = 'translateY(0)';
-                    isNavbarHidden = false;
-                }
-            }
-            
-            lastScrollTop = scrollTop;
+    const navLinks = document.querySelectorAll('.navigation a');
+
+    // Sticky Navbar on Scroll
+    const handleScroll = () => {
+        if (window.scrollY > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
         }
-    }
-    
-    // Create persistent logo for desktop
-    function createPersistentLogo() {
-        if (window.innerWidth > 768) {
-            let persistentLogo = document.querySelector('#persistent-logo');
-            
-            if (!persistentLogo) {
-                persistentLogo = document.createElement('div');
-                persistentLogo.id = 'persistent-logo';
-                persistentLogo.innerHTML = '<a href="#home"><h1 id="persistent-logo-text">M.</h1></a>';
-                persistentLogo.style.cssText = `
-                    position: fixed;
-                    top: 1rem;
-                    left: 2rem;
-                    z-index: 1002;
-                    transition: all 0.3s ease;
-                `;
-                document.body.appendChild(persistentLogo);
-            }
-        }
-    }
-    
-    // Hover area at top of screen to show navbar
-    function createHoverArea() {
-        if (window.innerWidth > 768) {
-            let hoverArea = document.querySelector('#navbar-hover-area');
-            
-            if (!hoverArea) {
-                hoverArea = document.createElement('div');
-                hoverArea.id = 'navbar-hover-area';
-                hoverArea.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 80px;
-                    z-index: 998;
-                    pointer-events: none;
-                `;
-                document.body.appendChild(hoverArea);
-                
-                // Show navbar on hover - use pointer-events: auto only for this event
-                hoverArea.addEventListener('mouseenter', function() {
-                    if (isNavbarHidden) {
-                        navigationBar.style.transform = 'translateY(0)';
-                    }
-                });
-                
-                // Hide navbar when leaving hover area (only if scrolled down)
-                hoverArea.addEventListener('mouseleave', function() {
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    if (scrollTop > 100) {
-                        setTimeout(() => {
-                            if (!navigationBar.matches(':hover')) {
-                                navigationBar.style.transform = 'translateY(-100%)';
-                            }
-                        }, 500);
-                    }
-                });
-            }
-            
-            // Enable pointer events only when navbar is hidden
-            if (isNavbarHidden) {
-                hoverArea.style.pointerEvents = 'auto';
-            } else {
-                hoverArea.style.pointerEvents = 'none';
-            }
-        }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    // Mobile Menu Toggle
+    burger.addEventListener('click', () => {
+        burger.classList.toggle('active');
+        navigation.classList.toggle('active');
+        document.body.style.overflow = navigation.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Close menu on link click
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            burger.classList.remove('active');
+            navigation.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+});
     }
     
     // Clean up desktop elements on mobile

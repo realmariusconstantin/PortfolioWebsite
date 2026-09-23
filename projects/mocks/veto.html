@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romish - Veto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mock-style.css">
+</head>
+<body class="mock-body">
+    <main class="mock-main">
+        <div style="text-align: center; margin-bottom: var(--space-8);">
+            <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">Map Veto</h1>
+            <p style="color: var(--romish-danger); font-size: 1.5rem; font-weight: 700;">Opponent is Banning...</p>
+            <div class="progress-bar-bg" style="width: 300px; height: 6px; background: rgba(255,255,255,0.1); margin: 20px auto; border-radius: 3px; overflow: hidden;">
+                <div style="width: 60%; height: 100%; background: var(--romish-danger); animation: progress-indeterminate 2s infinite linear;"></div>
+            </div>
+            <style>
+                @keyframes progress-indeterminate {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+            </style>
+        </div>
+
+        <div class="veto-grid">
+            <div class="map-card banned" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/75/Mirage_CS_GO.jpg'); background-color: #333;">
+                <div class="map-name">MIRAGE</div>
+            </div>
+            <div class="map-card" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/1/1a/Inferno_CS2.jpg'); background-color: #444;">
+                <div class="map-name">INFERNO</div>
+            </div>
+             <div class="map-card banned" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/4/4b/Nuke_CS_GO.jpg'); background-color: #333;">
+                <div class="map-name">NUKE</div>
+            </div>
+             <div class="map-card" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/2/23/Overpass_CS_GO.jpg'); background-color: #444;">
+                <div class="map-name">OVERPASS</div>
+            </div>
+             <div class="map-card" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/a/a2/Vertigo_CS_GO.jpg'); background-color: #444;">
+                <div class="map-name">VERTIGO</div>
+            </div>
+             <div class="map-card" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/7a/Ancient_CS_GO.jpg'); background-color: #444;">
+                <div class="map-name">ANCIENT</div>
+            </div>
+             <div class="map-card" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/77/Anubis_CS_GO.jpg'); background-color: #444;">
+                <div class="map-name">ANUBIS</div>
+            </div>
+        </div>
+        
+        <button style="margin-top: 50px; opacity: 0; pointer-events: none;" id="continueBtn" onclick="window.location.href='match.html'">Simulate Finish</button>
+
+        <script>
+            // Simulate the bot banning after a few seconds
+            setTimeout(() => {
+                const maps = document.querySelectorAll('.map-card:not(.banned)');
+                const randomMap = maps[Math.floor(Math.random() * maps.length)];
+                if(randomMap) {
+                    randomMap.classList.add('banned');
+                    document.querySelector('p').innerText = "Your Turn to Ban";
+                    document.querySelector('p').style.color = "var(--romish-accent)";
+                    document.querySelector('.progress-bar-bg div').style.background = "var(--romish-accent)";
+                }
+            }, 2000);
+            
+             // Allow user to click to ban remaining
+             document.querySelectorAll('.map-card').forEach(card => {
+                 card.addEventListener('click', () => {
+                     if(!card.classList.contains('banned')) {
+                         card.classList.add('banned');
+                         // Just simulate going to match page after a click for flow
+                          setTimeout(() => {
+                              window.location.href = 'match.html';
+                          }, 500);
+                     }
+                 })
+             })
+        </script>
+    </main>
+</body>
+</html>
