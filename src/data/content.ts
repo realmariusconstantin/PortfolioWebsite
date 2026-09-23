@@ -256,3 +256,240 @@ export const contact = {
     error: "Something went wrong and your message wasn't sent. Please try again, or email me directly.",
   },
 }
+
+// ---------------------------------------------------------------------------
+// Romish case study (/projects/romish)
+// Items starting with "TODO" are hidden on the live site and shown as dashed
+// placeholders in `npm run dev`, so you can see where they go.
+// ---------------------------------------------------------------------------
+
+export interface CaseStudyFeature {
+  id: string
+  title: string
+  image: Screenshot
+  body: string
+  points: string[]
+}
+
+export const romishCaseStudy = {
+  seo: {
+    title: 'Romish case study: CS2 10-man matchmaking | Marius Constantin',
+    description:
+      'How I designed and built Romish, a CS2 10-man platform with Steam and Discord sign-in, real-time queue, captain draft, map veto and Elo ratings.',
+    ogImage: '/og/romish.png',
+  },
+  title: 'Romish',
+  tagline:
+    'A CS2 10-man matchmaking platform that takes a match from queue to final score with no admin in the loop.',
+  meta: [
+    { label: 'Role', value: 'Solo full-stack developer' },
+    { label: 'Timeline', value: featuredProject.timeline },
+    { label: 'Status', value: featuredProject.status },
+  ],
+  heroImage: {
+    image: 'romish-draft',
+    alt: 'Romish captain draft screen: two captains on either side and a grid of available players in the middle',
+  } satisfies Screenshot,
+
+  problem: {
+    title: 'The problem',
+    paragraphs: [
+      "Community 10-man matches in Counter-Strike 2 were organised by hand. Someone had to collect ten players, check who was actually ready, balance two teams, run a map veto in chat, and then update everyone's rating in a spreadsheet after the game.",
+      'Every step depended on an admin being online, and every step was a chance for arguments about unfair teams or lost results.',
+    ],
+  },
+
+  solution: {
+    title: 'The solution',
+    intro: 'Romish automates the whole lifecycle of a match. It rests on four ideas.',
+    pillars: [
+      {
+        title: 'Verified players',
+        body: 'Sign-in goes through Steam, and players link Discord. Every account is tied to a real Steam identity, which cuts out throwaway accounts.',
+      },
+      {
+        title: 'Automated flow',
+        body: 'Queue, ready-check, draft, veto and match run on their own. Admins only step in when something goes wrong.',
+      },
+      {
+        title: 'Fair teams',
+        body: 'Every player has an Elo rating that moves after each match, so drafts and results reflect real skill over time.',
+      },
+      {
+        title: 'Real-time updates',
+        body: 'WebSockets push every queue change, pick and ban to all ten players instantly. Nobody has to refresh.',
+      },
+    ],
+  },
+
+  walkthrough: { eyebrow: 'Walkthrough', title: 'From sign-in to final score' },
+  technical: { eyebrow: 'Under the hood', title: 'Technical highlights' },
+
+  features: [
+    {
+      id: 'auth',
+      title: 'Secure sign-in with Steam and Discord',
+      image: {
+        image: 'romish-auth',
+        alt: 'Steam sign-in page asking the user to sign in to api.romish.org with their Steam account',
+      },
+      body: "Players sign in on Steam's own page through OpenID, so Romish never handles a Steam password. They then link Discord through OAuth2, and the API issues a JWT for the session.",
+      points: [
+        'Steam OpenID for game identity, handled by the API at api.romish.org',
+        'Discord OAuth2 to connect players to the community server',
+        'JWT-based sessions for the API and WebSocket connection',
+        'TODO: anything else worth calling out, e.g. token storage or role sync from Discord',
+      ],
+    },
+    {
+      id: 'admin',
+      title: 'Command center for admins',
+      image: {
+        image: 'romish-admin',
+        alt: 'Romish admin dashboard with counters for total users, active matches, queued players and online users, above a user management table',
+      },
+      body: 'Admins get one screen for the whole platform: live counters at the top, then tabs for admin controls, match control, user management, recent activity and a testing mode.',
+      points: [
+        'Live counts of users, active matches, queued players and who is online',
+        'Search users by name or Steam ID and filter by online, in queue or banned',
+        'Per-user actions, including bans, restricted to admin accounts',
+        // TODO: confirm. Inferred from the Testing Mode tab and the bot players in the screenshots.
+        'Testing mode for running the flow end to end without ten real players',
+      ],
+    },
+    {
+      id: 'queue',
+      title: 'One-click queue with ready-check',
+      image: {
+        image: 'romish-queue',
+        alt: 'Romish queue screen with five player slots, region Europe, game mode 5v5, and a 25 second queue timer',
+      },
+      body: "Joining is a single click. The lobby updates live as players join or leave. Once ten are in, everyone has to accept a ready-check before the draft starts, so one AFK player can't stall the match.",
+      points: [
+        'Live lobby showing who is queued, the region and the game mode',
+        'Queue timer and one-click leave',
+        'Ready-check before the draft begins',
+        'TODO: what happens when someone declines or misses the ready-check',
+      ],
+    },
+    {
+      id: 'draft',
+      title: 'Captain draft, 1-2-2-2-1',
+      image: {
+        image: 'romish-draft',
+        alt: 'Romish captain draft screen showing whose turn it is to pick, pick 1 of 8, and the remaining available players',
+      },
+      body: "Two captains pick the teams in a 1-2-2-2-1 order. After the first pick, each captain picks two in a row, which evens out the first-pick advantage. Every pick shows up for all players the moment it's made.",
+      points: [
+        'Eight picks in 1-2-2-2-1 order, with a clear turn indicator',
+        'Players move from the pool to a team as they are picked',
+        'TODO: how captains are chosen (highest Elo, random, other)',
+        'TODO: pick timer and what happens if a captain runs out of time',
+      ],
+    },
+    {
+      id: 'veto',
+      title: 'Map veto with side selection',
+      image: {
+        image: 'romish-veto',
+        alt: 'Romish map veto screen showing twelve CS2 maps and a banner saying it is your turn to ban',
+      },
+      body: "The captains take turns banning maps until one is left, then sides are chosen for it. It's the flow competitive players already know, without a spreadsheet or a chat thread.",
+      points: [
+        'Turn-based bans with a clear "your turn" indicator',
+        'Remaining map count shown throughout',
+        'Side selection for the final map',
+        'TODO: map pool rules (fixed list or admin-configurable)',
+      ],
+    },
+    {
+      id: 'match',
+      title: 'Match tracking and results',
+      image: {
+        image: 'romish-match',
+        alt: 'Romish match complete screen: Team Alpha wins 13 to 11 on Mirage, with both five-player rosters and captains marked',
+      },
+      body: "While the match is being played, its status is shown to every player. When it ends, the result page shows the winner, final score, map and both rosters, and every player's Elo is updated.",
+      points: [
+        'Match status visible to all ten players',
+        'Result summary with score, map, rosters and captains',
+        'Elo updated automatically from the result',
+        'TODO: how results get in (admin entry, player report, or game server integration)',
+      ],
+    },
+  ] satisfies CaseStudyFeature[],
+
+  architecture: {
+    title: 'Architecture',
+    intro:
+      'A Vue single-page app talks to a Node.js and Express API over REST for regular requests and over WebSockets for live match state. MongoDB stores users, matches and ratings. Steam and Discord handle identity.',
+    diagram: {
+      client: { kind: 'Client', name: 'Vue.js SPA', detail: 'romish.org' },
+      clientToApi: ['REST over HTTPS', 'WebSocket events'],
+      api: { kind: 'API', name: 'Node.js + Express', detail: 'api.romish.org', tags: ['JWT auth', 'Match state', 'Elo'] },
+      apiToDb: ['Reads and writes'],
+      db: { kind: 'Database', name: 'MongoDB', detail: 'users, matches, ratings' },
+      apiToIdentity: 'Identity',
+      identity: [
+        { name: 'Steam', detail: 'OpenID 2.0' },
+        { name: 'Discord', detail: 'OAuth2' },
+      ],
+    },
+    notes: [
+      'TODO: hosting (where the frontend, API and database run)',
+      'TODO: WebSocket library (Socket.IO or ws) and how rooms or channels map to matches',
+    ],
+  },
+
+  auth: {
+    title: 'How sign-in works',
+    steps: [
+      'The player clicks "Sign in with Steam" and is sent to Steam\'s OpenID login page.',
+      "Steam redirects back to the API with a signed response. The API verifies it and reads the player's Steam ID.",
+      'The player links Discord through the OAuth2 authorisation flow.',
+      'The API creates or updates the user in MongoDB and issues a JWT, which the app uses for API requests and the WebSocket connection.',
+      'TODO: where the JWT is stored (httpOnly cookie or local storage), its lifetime, and how refresh works',
+    ],
+  },
+
+  realtime: {
+    title: 'Real-time design',
+    // TODO: confirm these match your implementation (server validates each action and broadcasts state).
+    paragraphs: [
+      "Queue joins, ready-checks, draft picks and map bans are all events. The client sends an action, the server checks it is valid for the current state (for example, that it's really this captain's turn), updates the match, and broadcasts the new state to everyone in that match.",
+      'Keeping the server as the single source of truth means two players can never see different teams or different bans.',
+      'TODO: reconnect handling, e.g. what a player sees if they refresh mid-draft',
+    ],
+  },
+
+  elo: {
+    title: 'Elo ratings',
+    // TODO: confirm. "Starts at 1000" comes from the admin screenshot, where every new user is on 1000.
+    paragraphs: [
+      "Every player starts at 1000. After a match, each player's rating moves based on the result and how strong the other team was, using the standard Elo model.",
+    ],
+    formula: {
+      expected: 'E = 1 / (1 + 10^((R_opp − R) / 400))',
+      update: "R' = R + K × (S − E)",
+      legend: 'R is the player\'s rating, R_opp the opposing team\'s rating, S is 1 for a win and 0 for a loss, and K sets how far one match can move a rating.',
+    },
+    notes: [
+      'TODO: the K-factor you use, and whether it changes for new players',
+      'TODO: how a team rating is formed (e.g. the average of the five players)',
+    ],
+  },
+
+  challenges: {
+    title: 'Challenges and what I learned',
+    items: [
+      'TODO: hardest technical problem (e.g. keeping draft state in sync when players disconnect) and how you solved it',
+      'TODO: something you would design differently if you started again',
+      'TODO: what running a public beta with real players taught you',
+    ],
+  },
+
+  cta: {
+    title: 'Work with me',
+    body: "I'm looking for full-stack roles, internships and graduate positions. If Romish is the kind of work your team does, I'd like to hear from you.",
+  },
+}
