@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import AppIcon from '@/components/AppIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import BrowserFrame from '@/components/BrowserFrame.vue'
-import ResponsiveImage from '@/components/ResponsiveImage.vue'
+import ImageSlot from '@/components/ImageSlot.vue'
 import SectionHeading from '@/components/SectionHeading.vue'
 import TechChip from '@/components/TechChip.vue'
 import { featuredProject as romish, moreOnGithub, person, projects, sections } from '@/data/content'
+import { showsSlot } from '@/composables/useImageSlots'
 
 const published = projects.filter((p) => !p.draft)
 </script>
@@ -59,10 +59,8 @@ const published = projects.filter((p) => !p.draft)
         </div>
       </div>
 
-      <div class="px-3 sm:px-8 lg:px-10">
-        <BrowserFrame url="romish.org" class="rounded-b-none border-b-0">
-          <ResponsiveImage :image="romish.image!.image" :alt="romish.image!.alt" />
-        </BrowserFrame>
+      <div v-if="showsSlot(romish.image!.image)" class="px-3 sm:px-8 lg:px-10">
+        <ImageSlot :id="romish.image!.image" url="romish.org" :caption="false" frame-class="rounded-b-none border-b-0" />
       </div>
     </article>
 

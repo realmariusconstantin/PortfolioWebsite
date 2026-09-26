@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useSeo } from '@/composables/useSeo'
+import { provide, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useSeo } from '@/composables/useSeo'
+import { useScrollSpy } from '@/composables/useScrollSpy'
+import { lightboxKey, showsSlot } from '@/composables/useImageSlots'
 import AppIcon from '@/components/AppIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import BrowserFrame from '@/components/BrowserFrame.vue'
-import DevTodo from '@/components/DevTodo.vue'
 import ImageLightbox from '@/components/ImageLightbox.vue'
-import ResponsiveImage from '@/components/ResponsiveImage.vue'
+import ImageSlot from '@/components/ImageSlot.vue'
+import SectionHeading from '@/components/SectionHeading.vue'
 import TechChip from '@/components/TechChip.vue'
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.vue'
-import { featuredProject, isTodo, person, projects, romishCaseStudy as cs, site, type Screenshot } from '@/data/content'
+import CaseStudyToc, { type TocItem } from '@/components/case-study/CaseStudyToc.vue'
+import DataTable from '@/components/case-study/DataTable.vue'
+import DeepDiveBlock from '@/components/case-study/DeepDiveBlock.vue'
+import JourneyTimeline from '@/components/case-study/JourneyTimeline.vue'
+import { countWords, featuredProject, person, projects, romishCaseStudy as cs, site } from '@/data/content'
+
+const dev = import.meta.env.DEV
+const url = `${site.url}/projects/romish`
 
 useSeo({
   title: cs.seo.title,
@@ -18,29 +26,63 @@ useSeo({
   path: '/projects/romish',
   type: 'article',
   image: cs.seo.ogImage,
-  imageAlt: 'Romish case study',
+  imageAlt: cs.seo.ogImageAlt,
   jsonLd: {
     '@type': 'CreativeWork',
-    name: cs.title,
+    name: `${cs.hero.title} case study`,
     headline: cs.seo.title,
     description: cs.seo.description,
-    url: `${site.url}/projects/romish`,
+    url,
+    image: new URL(cs.seo.ogImage, site.url).href,
+    inLanguage: 'en',
     author: { '@type': 'Person', name: person.name, url: site.url },
-    keywords: featuredProject.stack.join(', '),
+    keywords: cs.hero.stack.join(', '),
+    about: {
+      '@type': 'SoftwareApplication',
+      name: cs.hero.title,
+      description: cs.hero.tagline,
+      applicationCategory: 'GameApplication',
+      operatingSystem: 'Web',
+      url: featuredProject.links[0]?.href,
+      author: { '@type': 'Person', name: person.name },
+    },
   },
 })
 
+// Screenshots anywhere on the page open in one shared lightbox
 const lightbox = ref<InstanceType<typeof ImageLightbox>>()
-const zoom = (shot: Screenshot) => lightbox.value?.open(shot)
+provide(lightboxKey, (shot) => lightbox.value?.open(shot))
 
-const hasChallenges = computed(() => cs.challenges.items.some((item) => !isTodo(item)))
-const dev = import.meta.env.DEV
+// Lessons only ship once confirmed (set `confirmed: false` on a lesson to hide it); dev shows them all
+const lessons = cs.lessons.items.filter((l) => l.confirmed || dev)
+
+const toc: TocItem[] = [
+  { id: cs.tldr.id, label: cs.tldr.nav },
+  { id: cs.problem.id, label: cs.problem.nav },
+  { id: cs.journey.id, label: cs.journey.nav },
+  {
+    id: cs.deepDives.id,
+    label: cs.deepDives.nav,
+    children: cs.deepDives.items.map((d) => ({ id: d.id, label: d.title })),
+  },
+  { id: cs.architecture.id, label: cs.architecture.nav },
+  { id: cs.failure.id, label: cs.failure.nav },
+  { id: cs.platform.id, label: cs.platform.nav },
+  { id: cs.testing.id, label: cs.testing.nav },
+  ...(lessons.length ? [{ id: cs.lessons.id, label: cs.lessons.nav }] : []),
+  { id: cs.status.id, label: cs.status.nav },
+]
+useScrollSpy(toc.map((t) => t.id))
+
+// Only count what this build renders (unconfirmed lessons are hidden in production)
+const readingMinutes = Math.max(1, Math.round(countWords({ ...cs, lessons: { ...cs.lessons, items: lessons } }) / 220))
+const sectionNumber = (id: string) => toc.findIndex((t) => t.id === id) + 1
 const nextProject = projects.find((p) => !p.draft)
 </script>
 
 <template>
   <article class="pb-8">
-    <!-- Header -->
+    <!-- 1. Hero -->
     <header class="container-content pt-10 sm:pt-16">
       <RouterLink
         :to="{ path: '/', hash: '#work' }"
@@ -50,14 +92,20 @@ const nextProject = projects.find((p) => !p.draft)
         All projects
       </RouterLink>
 
-      <p class="mt-10 eyebrow"><span class="text-accent">Case study</span></p>
-      <h1 class="mt-3 text-display font-semibold">{{ cs.title }}</h1>
-      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-pretty sm:text-xl">{{ cs.tagline }}</p>
+      <p class="mt-10 flex flex-wrap items-center gap-x-3 eyebrow">
+        <span class="text-accent">{{ cs.hero.eyebrow }}</span>
+        <span aria-hidden="true">·</span>
+        <span>{{ readingMinutes }} {{ cs.toc.readingTime }}</span>
+      </p>
+      <h1 class="mt-3 text-display font-semibold">{{ cs.hero.title }}</h1>
+      <p class="mt-5 max-w-3xl text-lg leading-relaxed text-pretty sm:text-xl">{{ cs.hero.tagline }}</p>
 
       <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-y border-line py-6 sm:grid-cols-4">
-        <div v-for="item in cs.meta" :key="item.label">
+        <div v-for="item in cs.hero.meta" :key="item.label">
           <dt class="eyebrow">{{ item.label }}</dt>
-          <dd class="mt-1.5 text-[0.9375rem]">{{ item.value }}</dd>
+          <dd class="mt-1.5 text-[0.9375rem]">
+            {{ item.value }}
+          </dd>
         </div>
         <div class="col-span-2 sm:col-span-1">
           <dt class="eyebrow">Links</dt>
@@ -81,203 +129,287 @@ const nextProject = projects.find((p) => !p.draft)
       </dl>
 
       <ul class="mt-6 flex flex-wrap gap-1.5" aria-label="Tech stack">
-        <TechChip v-for="tech in featuredProject.stack" :key="tech">{{ tech }}</TechChip>
+        <TechChip v-for="tech in cs.hero.stack" :key="tech">{{ tech }}</TechChip>
       </ul>
+
+      <!-- LCP image, loaded eagerly -->
+      <ImageSlot
+        v-if="showsSlot(cs.hero.image)"
+        :id="cs.hero.image"
+        class="mt-12"
+        :url="cs.hero.browserUrl"
+        eager
+      />
     </header>
 
-    <!-- Hero screenshot (LCP image, loaded eagerly) -->
-    <div class="container-content mt-12">
-      <button
-        type="button"
-        class="group relative block w-full cursor-zoom-in text-left"
-        :aria-label="`Enlarge screenshot: ${cs.heroImage.alt}`"
-        @click="zoom(cs.heroImage)"
-      >
-        <BrowserFrame url="romish.org">
-          <ResponsiveImage :image="cs.heroImage.image" :alt="cs.heroImage.alt" eager />
-        </BrowserFrame>
-      </button>
-    </div>
+    <div class="container-content mt-16 lg:mt-24 lg:grid lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-14">
+      <aside class="hidden lg:block">
+        <CaseStudyToc :items="toc" :title="cs.toc.title" mode="desktop" />
+      </aside>
 
-    <!-- Problem -->
-    <section aria-labelledby="problem" class="container-content mt-24 grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-16">
-      <h2 id="problem" v-reveal class="text-2xl font-semibold tracking-tight">{{ cs.problem.title }}</h2>
-      <div v-reveal class="max-w-2xl space-y-4 text-[1.0625rem] leading-relaxed text-pretty text-muted">
-        <p v-for="p in cs.problem.paragraphs" :key="p">{{ p }}</p>
-      </div>
-    </section>
+      <div class="min-w-0">
+        <div class="sticky top-16 z-30 lg:hidden">
+          <CaseStudyToc :items="toc" :title="cs.toc.title" mode="mobile" />
+        </div>
 
-    <!-- Solution -->
-    <section aria-labelledby="solution" class="container-content mt-20 grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-16">
-      <h2 id="solution" v-reveal class="text-2xl font-semibold tracking-tight">{{ cs.solution.title }}</h2>
-      <div>
-        <p v-reveal class="max-w-2xl text-[1.0625rem] leading-relaxed text-muted">{{ cs.solution.intro }}</p>
-        <ul class="mt-8 grid gap-4 sm:grid-cols-2">
-          <li
-            v-for="(pillar, i) in cs.solution.pillars"
-            :key="pillar.title"
-            v-reveal
-            class="rounded-lg border border-line bg-surface p-5"
-          >
-            <p class="font-mono text-xs text-accent">{{ String(i + 1).padStart(2, '0') }}</p>
-            <h3 class="mt-2 font-semibold">{{ pillar.title }}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-muted">{{ pillar.body }}</p>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Feature walkthrough -->
-    <section aria-labelledby="walkthrough" class="mt-24 border-t border-line pt-20">
-      <div class="container-content">
-        <p class="eyebrow">{{ cs.walkthrough.eyebrow }}</p>
-        <h2 id="walkthrough" class="mt-3 text-h2 font-semibold">{{ cs.walkthrough.title }}</h2>
-
-        <ol class="mt-14 space-y-20 lg:space-y-28">
-          <li
-            v-for="(feature, i) in cs.features"
-            :key="feature.id"
-            class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14"
-          >
-            <div v-reveal :class="{ 'lg:order-2': i % 2 === 1 }">
-              <p class="font-mono text-xs text-accent">{{ String(i + 1).padStart(2, '0') }}</p>
-              <h3 class="mt-2 text-2xl font-semibold tracking-tight">{{ feature.title }}</h3>
-              <p class="mt-4 leading-relaxed text-pretty text-muted">{{ feature.body }}</p>
-              <ul class="mt-5 space-y-2.5">
-                <template v-for="point in feature.points" :key="point">
-                  <DevTodo v-if="isTodo(point)" as="li" :text="point" />
-                  <li v-else class="flex gap-2.5 text-[0.9375rem] leading-relaxed">
-                    <AppIcon name="check" :size="16" class="mt-1 text-accent" />
-                    <span>{{ point }}</span>
-                  </li>
-                </template>
-              </ul>
-            </div>
-            <button
+        <!-- 2. TL;DR -->
+        <section :id="cs.tldr.id" aria-labelledby="tldr-title" class="scroll-mt-24 pt-12 lg:pt-0">
+          <SectionHeading
+            id="tldr-title"
+            :index="sectionNumber(cs.tldr.id)"
+            :eyebrow="cs.tldr.eyebrow"
+            :title="cs.tldr.title"
+            :takeaway="cs.tldr.takeaway"
+          />
+          <ul class="grid gap-3 sm:grid-cols-2">
+            <li
+              v-for="(point, i) in cs.tldr.points"
+              :key="point.lead"
               v-reveal
-              type="button"
-              class="group relative block w-full cursor-zoom-in text-left"
-              :aria-label="`Enlarge screenshot: ${feature.image.alt}`"
-              @click="zoom(feature.image)"
+              class="rounded-lg border border-line bg-surface p-5"
+              :class="{ 'sm:col-span-2': i === 0 }"
             >
-              <BrowserFrame>
-                <ResponsiveImage
-                  :image="feature.image.image"
-                  :alt="feature.image.alt"
-                  sizes="(min-width: 1024px) 520px, 100vw"
-                />
-              </BrowserFrame>
-              <span
-                class="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-2.5 py-1.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-                aria-hidden="true"
-              >
-                <AppIcon name="zoom" :size="14" /> Enlarge
-              </span>
-            </button>
-          </li>
-        </ol>
-      </div>
-    </section>
+              <p class="font-semibold">{{ point.lead }}</p>
+              <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-pretty text-muted">{{ point.body }}</p>
+            </li>
+          </ul>
+        </section>
 
-    <!-- Technical highlights -->
-    <section aria-labelledby="technical" class="mt-24 border-t border-line pt-20">
-      <div class="container-content">
-        <p class="eyebrow">{{ cs.technical.eyebrow }}</p>
-        <h2 id="technical" class="mt-3 text-h2 font-semibold">{{ cs.technical.title }}</h2>
+        <!-- 3. Problem -->
+        <section :id="cs.problem.id" aria-labelledby="problem-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="problem-title"
+            :index="sectionNumber(cs.problem.id)"
+            :eyebrow="cs.problem.eyebrow"
+            :title="cs.problem.title"
+            :takeaway="cs.problem.takeaway"
+            :intro="cs.problem.body"
+          />
+          <ul class="grid gap-3 md:grid-cols-3">
+            <li v-for="(item, i) in cs.problem.hard" :key="item.title" v-reveal class="rounded-lg border border-line p-5">
+              <p class="font-mono text-xs text-accent">{{ String(i + 1).padStart(2, '0') }}</p>
+              <h3 class="mt-2 font-semibold">{{ item.title }}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-pretty text-muted">{{ item.body }}</p>
+            </li>
+          </ul>
+        </section>
 
-        <div class="mt-12">
-          <h3 class="text-xl font-semibold tracking-tight">{{ cs.architecture.title }}</h3>
-          <div v-reveal class="mt-5">
-            <ArchitectureDiagram>{{ cs.architecture.intro }}</ArchitectureDiagram>
+        <!-- 4. Player journey -->
+        <section :id="cs.journey.id" aria-labelledby="journey-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="journey-title"
+            :index="sectionNumber(cs.journey.id)"
+            :eyebrow="cs.journey.eyebrow"
+            :title="cs.journey.title"
+            :takeaway="cs.journey.takeaway"
+            :intro="cs.journey.intro"
+          />
+          <div v-reveal class="rounded-lg border border-line bg-surface p-5 sm:p-8">
+            <JourneyTimeline :phases="cs.journey.phases" />
           </div>
-          <div class="mt-3 space-y-2">
-            <template v-for="note in cs.architecture.notes" :key="note">
-              <DevTodo v-if="isTodo(note)" :text="note" />
-              <p v-else class="text-sm text-muted">{{ note }}</p>
+
+          <ol class="mt-16 space-y-16 lg:space-y-20">
+            <li
+              v-for="(phase, i) in cs.journey.phases"
+              :id="`phase-${phase.id}`"
+              :key="phase.id"
+              class="grid scroll-mt-28 items-center gap-6 lg:gap-10"
+              :class="{ 'lg:grid-cols-2': showsSlot(phase.image) }"
+            >
+              <div v-reveal :class="{ 'lg:order-2': i % 2 === 1 }">
+                <p class="flex items-center gap-3 font-mono text-xs">
+                  <span class="text-accent">{{ String(i + 1).padStart(2, '0') }}</span>
+                  <span class="text-muted">{{ phase.clock }}</span>
+                </p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight">{{ phase.label }}</h3>
+                <ul class="mt-4 space-y-2.5">
+                  <li v-for="point in phase.points" :key="point" class="flex gap-2.5 text-[0.9375rem] leading-relaxed">
+                    <AppIcon name="check" :size="16" class="mt-1 text-accent" />
+                    <span class="text-pretty">{{ point }}</span>
+                  </li>
+                </ul>
+              </div>
+              <ImageSlot
+                v-if="showsSlot(phase.image)"
+                :id="phase.image"
+                v-reveal
+                sizes="(min-width: 1100px) 400px, 100vw"
+              />
+            </li>
+          </ol>
+
+          <ImageSlot
+            v-if="showsSlot(cs.journey.mobileImage)"
+            :id="cs.journey.mobileImage"
+            v-reveal
+            class="mt-16"
+            sizes="(min-width: 1100px) 860px, 100vw"
+          />
+        </section>
+
+        <!-- 5. Engineering deep dives -->
+        <section :id="cs.deepDives.id" aria-labelledby="deep-dives-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="deep-dives-title"
+            :index="sectionNumber(cs.deepDives.id)"
+            :eyebrow="cs.deepDives.eyebrow"
+            :title="cs.deepDives.title"
+            :takeaway="cs.deepDives.takeaway"
+          />
+          <div class="space-y-6">
+            <DeepDiveBlock
+              v-for="(dive, i) in cs.deepDives.items"
+              :key="dive.id"
+              :dive="dive"
+              :index="i"
+              :labels="cs.deepDives.labels"
+            />
+          </div>
+        </section>
+
+        <!-- 6. Architecture -->
+        <section :id="cs.architecture.id" aria-labelledby="architecture-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="architecture-title"
+            :index="sectionNumber(cs.architecture.id)"
+            :eyebrow="cs.architecture.eyebrow"
+            :title="cs.architecture.title"
+            :takeaway="cs.architecture.takeaway"
+            :intro="cs.architecture.intro"
+          />
+          <ArchitectureDiagram v-reveal />
+          <div v-reveal class="mt-10">
+            <h3 class="text-xl font-semibold tracking-tight">{{ cs.architecture.state.title }}</h3>
+            <p class="mt-2 max-w-2xl leading-relaxed text-pretty text-muted">{{ cs.architecture.state.rule }}</p>
+            <DataTable class="mt-5" :table="cs.architecture.state.table" />
+          </div>
+        </section>
+
+        <!-- 7. Handling failure -->
+        <section :id="cs.failure.id" aria-labelledby="failure-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="failure-title"
+            :index="sectionNumber(cs.failure.id)"
+            :eyebrow="cs.failure.eyebrow"
+            :title="cs.failure.title"
+            :takeaway="cs.failure.takeaway"
+          />
+          <div v-reveal class="sm:rounded-lg sm:border sm:border-line sm:bg-surface sm:px-8 sm:py-4">
+            <DataTable :table="cs.failure.table" />
+          </div>
+        </section>
+
+        <!-- 8. Beyond the match -->
+        <section :id="cs.platform.id" aria-labelledby="platform-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="platform-title"
+            :index="sectionNumber(cs.platform.id)"
+            :eyebrow="cs.platform.eyebrow"
+            :title="cs.platform.title"
+            :takeaway="cs.platform.takeaway"
+          />
+          <ul class="grid gap-4 md:grid-cols-3">
+            <li v-for="card in cs.platform.cards" :key="card.title" v-reveal class="rounded-lg border border-line bg-surface p-5">
+              <h3 class="font-semibold">{{ card.title }}</h3>
+              <ul class="mt-3 space-y-2.5">
+                <li v-for="point in card.points" :key="point" class="flex gap-2.5 text-sm leading-relaxed text-muted">
+                  <span class="mt-2 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                  <span class="text-pretty">{{ point }}</span>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <div class="mt-8 grid gap-6 md:grid-cols-2">
+            <template v-for="card in cs.platform.cards" :key="card.title">
+              <ImageSlot v-if="showsSlot(card.image)" :id="card.image!" v-reveal sizes="(min-width: 768px) 430px, 100vw" />
             </template>
           </div>
-        </div>
+        </section>
 
-        <div class="mt-12 grid gap-4 lg:grid-cols-2">
-          <div v-reveal class="min-w-0 rounded-lg border border-line bg-surface p-6">
-            <h3 class="text-xl font-semibold tracking-tight">{{ cs.auth.title }}</h3>
-            <ol class="mt-5 space-y-4">
-              <template v-for="(step, i) in cs.auth.steps" :key="step">
-                <DevTodo v-if="isTodo(step)" as="li" :text="step" />
-                <li v-else class="flex gap-3 text-[0.9375rem] leading-relaxed text-muted">
-                  <span
-                    class="flex size-6 shrink-0 items-center justify-center rounded-full border border-line-strong font-mono text-xs text-fg"
-                    aria-hidden="true"
-                  >
-                    {{ i + 1 }}
-                  </span>
-                  <span>{{ step }}</span>
-                </li>
-              </template>
-            </ol>
-          </div>
-
-          <div class="grid min-w-0 gap-4">
-            <div v-reveal class="min-w-0 rounded-lg border border-line bg-surface p-6">
-              <h3 class="text-xl font-semibold tracking-tight">{{ cs.realtime.title }}</h3>
-              <div class="mt-4 space-y-3 text-[0.9375rem] leading-relaxed text-muted">
-                <template v-for="p in cs.realtime.paragraphs" :key="p">
-                  <DevTodo v-if="isTodo(p)" :text="p" />
-                  <p v-else>{{ p }}</p>
-                </template>
-              </div>
+        <!-- 9. Testing and tooling -->
+        <section :id="cs.testing.id" aria-labelledby="testing-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="testing-title"
+            :index="sectionNumber(cs.testing.id)"
+            :eyebrow="cs.testing.eyebrow"
+            :title="cs.testing.title"
+            :takeaway="cs.testing.takeaway"
+          />
+          <dl class="grid gap-x-10 gap-y-8 md:grid-cols-2">
+            <div v-for="item in cs.testing.items" :key="item.title" v-reveal>
+              <dt class="font-semibold">{{ item.title }}</dt>
+              <dd class="mt-2 text-[0.9375rem] leading-relaxed text-pretty text-muted">{{ item.body }}</dd>
             </div>
+          </dl>
+          <ImageSlot
+            v-if="showsSlot(cs.testing.image)"
+            :id="cs.testing.image"
+            v-reveal
+            class="mt-12"
+            sizes="(min-width: 1100px) 860px, 100vw"
+          />
+        </section>
 
-            <div v-reveal class="min-w-0 rounded-lg border border-line bg-surface p-6">
-              <h3 class="text-xl font-semibold tracking-tight">{{ cs.elo.title }}</h3>
-              <p v-for="p in cs.elo.paragraphs" :key="p" class="mt-4 text-[0.9375rem] leading-relaxed text-muted">
-                {{ p }}
-              </p>
-              <pre
-                class="mt-4 overflow-x-auto rounded-md border border-line bg-bg p-4 font-mono text-[0.8125rem] leading-relaxed"
-              ><code>{{ cs.elo.formula.expected }}
-{{ cs.elo.formula.update }}</code></pre>
-              <p class="mt-3 text-sm leading-relaxed text-muted">{{ cs.elo.formula.legend }}</p>
-              <div class="mt-3 space-y-2">
-                <template v-for="note in cs.elo.notes" :key="note">
-                  <DevTodo v-if="isTodo(note)" :text="note" />
-                  <p v-else class="text-sm text-muted">{{ note }}</p>
-                </template>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- 10. Lessons learned: only confirmed lessons ship -->
+        <section
+          v-if="lessons.length"
+          :id="cs.lessons.id"
+          aria-labelledby="lessons-title"
+          class="scroll-mt-24 pt-24"
+        >
+          <SectionHeading
+            id="lessons-title"
+            :index="sectionNumber(cs.lessons.id)"
+            :eyebrow="cs.lessons.eyebrow"
+            :title="cs.lessons.title"
+            :takeaway="cs.lessons.takeaway"
+          />
+          <ol class="space-y-4">
+            <li v-for="(lesson, i) in lessons" :key="lesson.title" v-reveal class="rounded-lg border border-line p-5 sm:p-6">
+              <p class="font-mono text-xs text-accent">{{ String(i + 1).padStart(2, '0') }}</p>
+              <h3 class="mt-2 text-lg font-semibold">{{ lesson.title }}</h3>
+              <p class="mt-2 leading-relaxed text-pretty text-muted">{{ lesson.body }}</p>
+            </li>
+          </ol>
+        </section>
+
+        <!-- 11. Status -->
+        <section :id="cs.status.id" aria-labelledby="status-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="status-title"
+            :index="sectionNumber(cs.status.id)"
+            :eyebrow="cs.status.eyebrow"
+            :title="cs.status.title"
+            :takeaway="cs.status.takeaway"
+          />
+          <p v-reveal class="max-w-2xl leading-relaxed text-pretty text-muted">{{ cs.status.body }}</p>
+          <ul v-reveal class="mt-5 grid gap-3 sm:grid-cols-2">
+            <li
+              v-for="item in cs.status.next"
+              :key="item"
+              class="flex items-start gap-3 rounded-lg border border-line bg-surface p-4 text-[0.9375rem] leading-relaxed"
+            >
+              <AppIcon name="arrow-right" :size="16" class="mt-1 text-accent" />
+              <span>{{ item }}</span>
+            </li>
+          </ul>
+        </section>
       </div>
-    </section>
+    </div>
 
-    <!-- Challenges: hidden in production until real entries are written -->
-    <section
-      v-if="hasChallenges || dev"
-      aria-labelledby="challenges"
-      class="container-content mt-24 grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-16"
-    >
-      <h2 id="challenges" class="text-2xl font-semibold tracking-tight">{{ cs.challenges.title }}</h2>
-      <ul class="max-w-2xl space-y-4">
-        <template v-for="item in cs.challenges.items" :key="item">
-          <DevTodo v-if="isTodo(item)" as="li" :text="item" />
-          <li v-else class="leading-relaxed text-muted">{{ item }}</li>
-        </template>
-      </ul>
-    </section>
-
-    <!-- CTA + project navigation -->
-    <section aria-labelledby="cta" class="container-content mt-24">
+    <!-- 12. CTA + project navigation -->
+    <section aria-labelledby="cta-title" class="container-content mt-24">
       <div v-reveal class="rounded-lg border border-line bg-surface p-8 sm:p-12">
-        <h2 id="cta" class="text-h2 font-semibold">{{ cs.cta.title }}</h2>
+        <h2 id="cta-title" class="text-h2 font-semibold">{{ cs.cta.title }}</h2>
         <p class="mt-4 max-w-xl leading-relaxed text-pretty text-muted">{{ cs.cta.body }}</p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <BaseButton href="/#contact" variant="primary">
-            Get in touch
+            {{ cs.cta.contact }}
             <AppIcon name="arrow-right" :size="16" />
           </BaseButton>
           <BaseButton :href="site.resume" external>
             <AppIcon name="file" :size="16" />
-            View resume
+            {{ cs.cta.resume }}
           </BaseButton>
         </div>
       </div>
@@ -287,7 +419,7 @@ const nextProject = projects.find((p) => !p.draft)
           :to="{ path: '/', hash: '#work' }"
           class="group rounded-lg border border-line p-5 transition-colors hover:border-line-strong"
         >
-          <span class="eyebrow">Back</span>
+          <span class="eyebrow">Previous</span>
           <span class="mt-1 flex items-center gap-2 font-medium">
             <AppIcon name="arrow-left" :size="16" class="transition-transform group-hover:-translate-x-0.5" />
             All projects

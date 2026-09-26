@@ -16,5 +16,5 @@
     "types": ["vite/client", "vite-ssg", "node"],
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "api/**/*.ts", "vite.config.ts"]
 }

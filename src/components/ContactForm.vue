@@ -1,29 +1,47 @@
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import AppIcon from './AppIcon.vue'
 import { contact, person, site } from '@/data/content'
 
 type Field = 'name' | 'email' | 'message'
 type Status = 'idle' | 'sending' | 'success' | 'error'
 
+// Same pattern the server uses (api/contact.ts). The server also rejects disposable
+// addresses and domains that can't receive mail, and reports that back per field.
+const EMAIL =
+  /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i
+
 const form = reactive({ name: '', email: '', subject: '', message: '', _gotcha: '' })
 const touched = reactive<Record<Field, boolean>>({ name: false, email: false, message: false })
+const serverErrors = reactive<Partial<Record<Field, string>>>({})
 const status = ref<Status>('idle')
 const serverError = ref('')
 const successHeading = ref<HTMLElement>()
+
+// Time since the form appeared; the server drops submissions made faster than a person could type
+let shownAt = 0
+onMounted(() => (shownAt = performance.now()))
+
+// A server error on a field clears as soon as that field is edited
+for (const field of ['name', 'email', 'message'] as const) {
+  watch(
+    () => form[field],
+    () => delete serverErrors[field],
+  )
+}
 
 const errors = computed<Record<Field, string>>(() => ({
   name: form.name.trim() ? '' : 'Please enter your name.',
   email: !form.email.trim()
     ? 'Please enter your email address.'
-    : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
+    : EMAIL.test(form.email.trim())
       ? ''
       : 'Please enter a valid email address, like name@example.com.',
   message:
     form.message.trim().length >= 10 ? '' : 'Please write a message of at least 10 characters.',
 }))
 
-const visibleError = (field: Field) => (touched[field] ? errors.value[field] : '')
+const visibleError = (field: Field) => (touched[field] ? errors.value[field] || serverErrors[field] || '' : '')
 
 async function submit(event: Event) {
   const fields: Field[] = ['name', 'email', 'message']
@@ -37,18 +55,34 @@ async function submit(event: Event) {
   status.value = 'sending'
   serverError.value = ''
   try {
-    const body = new FormData()
-    body.append('name', form.name.trim())
-    body.append('email', form.email.trim())
-    body.append('subject', form.subject.trim())
-    body.append('message', form.message.trim())
-    body.append('_subject', form.subject.trim() || `Portfolio message from ${form.name.trim()}`)
-    body.append('_gotcha', form._gotcha)
+    const res = await fetch(site.formEndpoint, {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        subject: form.subject.trim(),
+        message: form.message.trim(),
+        _gotcha: form._gotcha,
+        elapsedMs: Math.round(performance.now() - shownAt),
+      }),
+    })
+    const data = await res.json().catch(() => null)
 
-    const res = await fetch(site.formEndpoint, { method: 'POST', body, headers: { Accept: 'application/json' } })
+    // The server rejected a field (e.g. an email domain that can't receive mail): show it inline
+    if (res.status === 422 && data?.errors) {
+      Object.assign(serverErrors, data.errors)
+      status.value = 'idle'
+      await nextTick()
+      const firstInvalid = fields.find((f) => serverErrors[f])
+      if (firstInvalid) {
+        touched[firstInvalid] = true
+        ;(event.target as HTMLFormElement).querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus()
+      }
+      return
+    }
     if (!res.ok) {
-      const data = await res.json().catch(() => null)
-      serverError.value = data?.errors?.map((e: { message: string }) => e.message).join(' ') ?? ''
+      serverError.value = data?.error ?? ''
       throw new Error(`Form submission failed with status ${res.status}`)
     }
     status.value = 'success'
@@ -153,7 +187,7 @@ const inputClass = (field?: Field) => [
         </p>
       </div>
 
-      <!-- Honeypot for bots; Formspree drops submissions where this is filled -->
+      <!-- Honeypot for bots; api/contact.ts drops submissions where this is filled -->
       <div class="hidden" aria-hidden="true">
         <label for="cf-gotcha">Leave this field empty</label>
         <input id="cf-gotcha" v-model="form._gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />

@@ -5,3 +5,6 @@ dist/
 .DS_Store
 .vercel
 .playwright-mcp/
+
+# Private Romish docs (source for the case study, not published)
+romish-docs/

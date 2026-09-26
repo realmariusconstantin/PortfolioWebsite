@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import AppIcon from './AppIcon.vue'
 import ResponsiveImage from './ResponsiveImage.vue'
 import type { Screenshot } from '@/data/content'
+import { imageMeta } from '@/data/images.generated'
 
 /** Full-screen image viewer built on the native <dialog>, which handles focus trapping and Escape. */
 const dialog = ref<HTMLDialogElement>()
 const current = ref<Screenshot | null>(null)
+
+// Width is capped by the viewport width and by the height the image would need, so portrait crops fit too
+const figureWidth = computed(() => {
+  const meta = current.value ? imageMeta[current.value.image] : undefined
+  const ratio = meta ? meta.width / meta.height : 1.9
+  return `min(100%, 1400px, calc((100dvh - 9rem) * ${ratio.toFixed(3)}))`
+})
 
 function open(shot: Screenshot) {
   current.value = shot
@@ -31,8 +39,7 @@ defineExpose({ open })
     @click="onClick"
     @close="current = null"
   >
-    <!-- Width is capped by both the viewport width and height so the whole image always fits -->
-    <figure v-if="current" class="relative w-[min(100%,1400px,calc((100dvh-9rem)*1.9))]">
+    <figure v-if="current" class="relative" :style="{ width: figureWidth }">
       <button
         type="button"
         class="absolute -top-2 right-0 z-10 inline-flex size-10 -translate-y-full items-center justify-center rounded-md text-white/80 hover:bg-white/10 hover:text-white"
@@ -44,7 +51,7 @@ defineExpose({ open })
       <div class="overflow-hidden rounded-md border border-white/10">
         <ResponsiveImage :image="current.image" :alt="current.alt" sizes="100vw" eager />
       </div>
-      <figcaption class="mt-3 text-center text-sm text-white/80">{{ current.alt }}</figcaption>
+      <figcaption class="mt-3 text-center text-sm text-white/80">{{ current.caption || current.alt }}</figcaption>
     </figure>
   </dialog>
 </template>
