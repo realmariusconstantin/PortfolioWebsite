@@ -152,7 +152,7 @@ export const projects: Project[] = [
     slug: 'portfolio',
     title: 'This portfolio',
     summary:
-      'Pre-rendered Vue site with all copy driven from one typed content file, light and dark themes, and a Lighthouse budget of 95+.',
+      'Pre-rendered Vue site with all copy driven from one typed content file, with light and dark themes.',
     stack: ['Vue 3', 'TypeScript', 'Tailwind CSS', 'Vite', 'Vercel'],
     links: [
       { label: 'GitHub', href: 'https://github.com/realmariusconstantin/PortfolioWebsite', external: true },
@@ -220,9 +220,9 @@ export const skills: { group: string; items: string[] }[] = [
 
 export const about = {
   paragraphs: [
-    "I'm a third-year BSc Mobile & Web Computing student at the Technological University of the Shannon (TUS Midlands Midwest). I grew up in Romania, live in Ireland, and work in English and Romanian.",
+    "I'm a third-year BSc Mobile & Web Computing student at the Technological University of the Shannon (TUS Midlands Midwest). I was born in Romania, live in Ireland, and speak both English and Romanian.",
     'Romish came from a real problem: organising CS2 10-mans meant tracking players, balancing teams and updating Elo by hand. I designed and built the platform that now automates all of it, from Steam sign-in to the final score.',
-    "Alongside my degree I work part-time in a busy customer-facing team, where I've also trained new staff. It's taught me to stay calm under pressure, communicate clearly and be someone the team can rely on.",
+    "Alongside my degree I work as a manager at Supermac's, running a busy customer-facing team and training new staff. It's taught me to stay calm under pressure, communicate clearly and be someone the team can rely on.",
     "Next, I want to join a team as a full-stack developer and ship software people use every day. Long term, I'd like to build a company of my own.",
   ],
   facts: [
@@ -258,13 +258,12 @@ export const timeline: {
   },
   {
     kind: 'Work',
-    // TODO: CV says "Manager". Confirm the job title you want shown here and on your CV.
-    title: 'Part-time team member',
+    title: 'Manager',
     org: "Supermac's",
     period: '2022 to present',
     location: 'Nenagh, Ireland',
     points: [
-      'Customer-facing role in a busy, fast-paced team, held alongside full-time study.',
+      'Manage a busy, fast-paced, customer-facing team alongside my studies.',
       'Trained new staff on service standards and day-to-day procedures.',
     ],
   },
