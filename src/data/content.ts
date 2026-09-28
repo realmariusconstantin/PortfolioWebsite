@@ -73,7 +73,7 @@ export const site = {
     'Full-stack developer in Ireland building real-time web apps with TypeScript, Vue and React/Next.js. Creator of Romish, a CS2 10-player matchmaking platform.',
   ogImage: '/og/home.png',
   // Bump ?v= whenever the PDF is replaced, so browsers and caches fetch the new copy.
-  resume: '/Marius-Constantin-CV.pdf?v=2026-09-28',
+  resume: '/Marius-Constantin-CV.pdf?v=2026-09-28b',
   // The contact form posts here; api/contact.ts validates the email and forwards to Formspree.
   formEndpoint: '/api/contact',
 }
