@@ -6,6 +6,103 @@ export interface ImageMeta {
 }
 
 export const imageMeta: Record<string, ImageMeta> = {
+  "romish-landing": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [
+      480,
+      800,
+      1600,
+      1920
+    ]
+  },
+  "romish-play": {
+    "width": 1868,
+    "height": 953,
+    "widths": [
+      480,
+      800,
+      1600,
+      1868
+    ]
+  },
+  "romish-ready-check": {
+    "width": 446,
+    "height": 478,
+    "widths": [
+      446
+    ]
+  },
+  "romish-draft": {
+    "width": 1873,
+    "height": 887,
+    "widths": [
+      480,
+      800,
+      1600,
+      1873
+    ]
+  },
+  "romish-veto": {
+    "width": 1872,
+    "height": 890,
+    "widths": [
+      480,
+      800,
+      1600,
+      1872
+    ]
+  },
+  "romish-setup": {
+    "width": 1863,
+    "height": 890,
+    "widths": [
+      480,
+      800,
+      1600,
+      1863
+    ]
+  },
+  "romish-live": {
+    "width": 1873,
+    "height": 894,
+    "widths": [
+      480,
+      800,
+      1600,
+      1873
+    ]
+  },
+  "romish-results": {
+    "width": 1856,
+    "height": 957,
+    "widths": [
+      480,
+      800,
+      1600,
+      1856
+    ]
+  },
+  "romish-mobile": {
+    "width": 1760,
+    "height": 924,
+    "widths": [
+      480,
+      800,
+      1600,
+      1760
+    ]
+  },
+  "romish-before": {
+    "width": 1868,
+    "height": 953,
+    "widths": [
+      480,
+      800,
+      1600,
+      1868
+    ]
+  },
   "romish-social": {
     "width": 394,
     "height": 440,

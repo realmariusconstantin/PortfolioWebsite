@@ -19,6 +19,17 @@ const WIDTHS = [480, 800, 1600, 2400]
 const OG = { slot: 'romish-landing', file: 'public/og/romish-og.jpg' }
 
 /**
+ * Until a slot's new (rebranded) original is in assets-src/, export the pre-rebrand
+ * screenshot of the same screen from assets-src/pre-rebrand/ so the page never loses it.
+ * Default: the same slot id as a PNG. Listed here only where the old file name differs.
+ */
+const PRE_REBRAND = `${SRC}/pre-rebrand`
+const preRebrandName = {
+  'romish-play': 'romish-dashboard.png', // the Play page was called the dashboard
+  'romish-before': 'romish-dashboard.png', // the Play page before the rebrand
+}
+
+/**
  * Personal data to hide before export: Steam names, Steam IDs, IPs, passwords, admin URLs.
  * Regions are in original pixels, so each entry records the size it was measured on
  * (`expect`). If a replaced screenshot has a different size the image is NOT exported:
@@ -69,13 +80,19 @@ async function blurRegions(input, regions) {
 await mkdir(OUT, { recursive: true })
 const manifest = {}
 const missing = []
+const fallback = []
 const refused = []
 
 for (const slot of romishImages) {
-  const src = `${SRC}/${slot.file}`
+  let src = `${SRC}/${slot.file}`
   if (!existsSync(src)) {
-    missing.push(slot.file)
-    continue
+    const old = `${PRE_REBRAND}/${preRebrandName[slot.id] ?? `${slot.id}.png`}`
+    if (!existsSync(old)) {
+      missing.push(slot.file)
+      continue
+    }
+    src = old
+    fallback.push(`${slot.file} (using ${old})`)
   }
   let buf = await sharp(src).png().toBuffer()
   const { width, height } = await sharp(buf).metadata()
@@ -154,6 +171,7 @@ export const imageMeta: Record<string, ImageMeta> = ${JSON.stringify(manifest, n
 `,
 )
 
+if (fallback.length) console.log(`\nPre-rebrand screenshot used until the new one is added:\n  ${fallback.join('\n  ')}`)
 if (missing.length) console.log(`\nNot in assets-src/ yet (the site shows a placeholder): ${missing.join(', ')}`)
 if (refused.length) {
   console.error(`\nNOT exported, blur regions need re-measuring:\n  ${refused.join('\n  ')}`)
