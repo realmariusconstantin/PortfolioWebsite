@@ -1,4 +1,4 @@
-// Builds assets-src/romish-mobile.png: phone screenshots from assets-src/mobile/
+// Builds assets-src/romish-mobile.webp (lossless): phone screenshots from assets-src/mobile/
 // side by side on a dark canvas, each with rounded corners.
 // Run with: node scripts/compose-mobile.mjs   (then `npm run images`)
 //
@@ -34,7 +34,7 @@ await sharp({
   },
 })
   .composite(phones.map((input, i) => ({ input, left: PAD + i * (W + GAP), top: PAD })))
-  .png()
-  .toFile('assets-src/romish-mobile.png')
+  .webp({ lossless: true })
+  .toFile('assets-src/romish-mobile.webp')
 
-console.log(`assets-src/romish-mobile.png: ${PHONES.join(', ')}`)
+console.log(`assets-src/romish-mobile.webp: ${PHONES.join(', ')}`)

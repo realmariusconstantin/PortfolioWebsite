@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 import AppIcon from '@/components/AppIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
+import RomishMark from '@/components/RomishMark.vue'
 import SocialLinks from '@/components/SocialLinks.vue'
 import { featuredProject, hero, person } from '@/data/content'
 </script>
@@ -58,7 +59,9 @@ import { featuredProject, hero, person } from '@/data/content'
         class="group relative hidden rounded-lg border border-line bg-surface p-5 transition-colors hover:border-line-strong lg:block"
       >
         <div class="flex items-center gap-3">
-          <img src="/images/romish-helmet-96.webp" alt="" width="40" height="40" class="size-10 rounded-md bg-surface-2" />
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-2">
+            <RomishMark :size="28" decorative />
+          </span>
           <div>
             <p class="eyebrow">Now building</p>
             <h2 class="font-semibold">{{ featuredProject.title }}</h2>

@@ -55,6 +55,41 @@
   color-scheme: dark;
 }
 
+/*
+ * Romish brand, scoped to the Romish case study (never the whole site).
+ * Amber #ffaa1f is a fill only on light backgrounds; amber text there uses #9a5b00 (5.2:1 on bg).
+ * `--c-brand*` is the amber fill for the brand button, the same in both themes.
+ */
+.romish {
+  --c-accent: #9a5b00;
+  --c-accent-hover: #7a4800;
+  --c-accent-fg: #ffffff;
+  --c-accent-soft: #fff4e0;
+  --c-brand: #ffaa1f;
+  --c-brand-hover: #ffbd4f;
+  --c-brand-fg: #0b0c0e;
+  color: var(--c-fg);
+}
+.dark .romish,
+.romish-dark {
+  --c-bg: #0b0c0e;
+  --c-surface: #121316;
+  --c-line: #24272c;
+  --c-fg: #edebe6;
+  --c-muted: #9398a1;
+  --c-accent: #ffaa1f;
+  --c-accent-hover: #ffc061;
+  --c-accent-fg: #0b0c0e;
+  --c-accent-soft: #2b1f0a;
+  color: var(--c-fg);
+}
+/* A dark brand surface in both themes: the hero frame, the mark and the type specimen. */
+.romish-dark {
+  --c-surface-2: #121316;
+  --c-line-strong: #3a3e45;
+  color-scheme: dark;
+}
+
 @theme inline {
   --color-bg: var(--c-bg);
   --color-surface: var(--c-surface);

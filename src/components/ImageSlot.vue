@@ -11,7 +11,7 @@ import { hasImage, lightboxKey } from '@/composables/useImageSlots'
  * - Image exported: responsive AVIF/WebP with its size reserved, click to enlarge
  *   (when the page provides a lightbox).
  * - Image missing, dev: a dashed placeholder at the slot's aspect ratio saying what to capture.
- * - Image missing, production: nothing. Use `showsSlot()` to adapt the surrounding layout.
+ * - Image missing, production: a "Screenshot coming soon" placeholder at the same size, never a broken image.
  */
 const props = withDefaults(
   defineProps<{
@@ -73,6 +73,18 @@ function zoom() {
       <p class="text-sm font-semibold">Screenshot needed: assets-src/{{ slot.file }}</p>
       <p>{{ slot.capture }}</p>
       <p>Recommended size: {{ slot.size }}. Then run <code>npm run images</code>.</p>
+    </div>
+    <figcaption v-if="caption" class="mt-3 text-sm leading-relaxed text-muted">{{ slot.caption }}</figcaption>
+  </figure>
+
+  <figure v-else-if="slot" class="min-w-0" :class="{ 'mx-auto w-full': slot.maxWidth }" :style="{ maxWidth: slot.maxWidth }">
+    <div
+      class="flex flex-col items-center justify-center gap-1 rounded-md border border-dashed border-line-strong bg-surface-2 p-4 text-center"
+      :class="frameClass"
+      :style="{ aspectRatio: slot.aspect }"
+    >
+      <p class="text-sm font-medium">Screenshot coming soon</p>
+      <p class="font-mono text-xs text-muted">{{ slot.label }}</p>
     </div>
     <figcaption v-if="caption" class="mt-3 text-sm leading-relaxed text-muted">{{ slot.caption }}</figcaption>
   </figure>

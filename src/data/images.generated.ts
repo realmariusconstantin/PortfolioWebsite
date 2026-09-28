@@ -6,85 +6,6 @@ export interface ImageMeta {
 }
 
 export const imageMeta: Record<string, ImageMeta> = {
-  "romish-landing": {
-    "width": 1920,
-    "height": 1080,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-dashboard": {
-    "width": 1868,
-    "height": 953,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-ready-check": {
-    "width": 446,
-    "height": 478,
-    "widths": [
-      446
-    ]
-  },
-  "romish-draft": {
-    "width": 1873,
-    "height": 887,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-veto": {
-    "width": 1872,
-    "height": 890,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-setup": {
-    "width": 1863,
-    "height": 890,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-live": {
-    "width": 1873,
-    "height": 894,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-results": {
-    "width": 1856,
-    "height": 957,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
-  "romish-mobile": {
-    "width": 1760,
-    "height": 924,
-    "widths": [
-      480,
-      800,
-      1600
-    ]
-  },
   "romish-social": {
     "width": 394,
     "height": 440,
@@ -98,7 +19,8 @@ export const imageMeta: Record<string, ImageMeta> = {
     "widths": [
       480,
       800,
-      1600
+      1600,
+      1873
     ]
   },
   "romish-match-lab": {
@@ -107,7 +29,8 @@ export const imageMeta: Record<string, ImageMeta> = {
     "widths": [
       480,
       800,
-      1600
+      1600,
+      1870
     ]
   },
   "romish-profile": {
@@ -116,7 +39,8 @@ export const imageMeta: Record<string, ImageMeta> = {
     "widths": [
       480,
       800,
-      1600
+      1600,
+      1870
     ]
   },
   "romish-servers": {
@@ -125,7 +49,8 @@ export const imageMeta: Record<string, ImageMeta> = {
     "widths": [
       480,
       800,
-      1600
+      1600,
+      1860
     ]
   }
 }

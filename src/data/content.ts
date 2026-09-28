@@ -17,8 +17,10 @@
 export interface ImageSlot {
   /** Output name in public/images and the key in images.generated.ts. */
   id: string
-  /** PNG original to drop into assets-src/. */
+  /** Original (WebP or PNG) to drop into assets-src/. */
   file: string
+  /** Short name of the screen, shown on the placeholder until the file exists. */
+  label: string
   alt: string
   caption: string
   /** CSS aspect-ratio reserved for the placeholder before the image exists, e.g. "16 / 9". */
@@ -131,9 +133,9 @@ export const featuredProject: Project & { outcomes: string[]; timeline: string; 
   slug: 'romish',
   title: 'Romish',
   summary:
-    'CS2 10-player matchmaking platform: Steam sign-in, queue, ready check, captain draft, map veto, automated game servers and Elo.',
+    'Captains draft, ban maps, then play on a server the app provisions itself: real-time for ten players, built solo.',
   status: 'Pre-launch',
-  timeline: 'March 2025 to present',
+  timeline: '2024 to present',
   stack: ['Next.js 16', 'React 19', 'TypeScript', 'MongoDB', 'Redis', 'Pusher', 'Steam OpenID', 'DatHost + MatchZy'],
   outcomes: [
     'Runs a whole 10-player match with no admin involved: queue, ready check, captain draft, map veto, a configured game server and Elo.',
@@ -144,7 +146,7 @@ export const featuredProject: Project & { outcomes: string[]; timeline: string; 
   links: [{ label: 'Live site', href: 'https://romish.org', external: true }],
   repoNote: 'Private repo, walkthrough on request',
   caseStudy: '/projects/romish',
-  image: { image: 'romish-draft', alt: '' }, // alt comes from the image slot
+  image: { image: 'romish-landing', alt: '' }, // alt comes from the image slot
 }
 
 export const projects: Project[] = [
@@ -283,109 +285,155 @@ export const contact = {
 
 // ---------------------------------------------------------------------------
 // Romish: image slots
-// Drop a PNG into assets-src/ with the exact `file` name and run `npm run images`.
-// Until then the slot shows a dashed placeholder in `npm run dev` and nothing in
-// production. Blur regions for personal data live in scripts/optimize-images.mjs.
+// Drop the original (WebP or PNG) into assets-src/ with the exact `file` name and
+// run `npm run images`. Until then the slot renders a labelled "Screenshot coming
+// soon" placeholder at the right size (with capture notes in `npm run dev`).
+// Blur regions for personal data live in scripts/optimize-images.mjs.
+// Alt text for the post-rebrand shots is written ahead of the files: check it
+// against each screenshot when you add it.
 // ---------------------------------------------------------------------------
 
-const desktop = 'Desktop browser, viewport 1600 × 900 or larger (the existing shots are about 1870 × 950).'
+const desktop = 'Desktop browser at 1200px wide or more, exported as WebP at 2400px wide (2x).'
 
 export const romishImages = [
   {
     id: 'romish-landing',
-    file: 'romish-landing.png',
-    alt: 'Romish landing page: the headline "The home of competitive CS2", a Sign in with Steam button and a preview of the Play page',
+    file: 'romish-landing.webp',
+    label: 'Landing page',
+    alt: 'The Romish landing page after the rebrand, with the Ready ring logo in the navbar, the headline and a Sign in with Steam button',
     caption: 'The landing page. Sign-in is Steam only.',
     aspect: '16 / 9',
-    size: '1920 × 1080',
-    capture: 'Landing page, signed out, desktop at 1600px wide or more. Whole first screen, no cookie banner.',
+    size: '2400 × 1350',
+    capture: `Landing page hero with the new brand, signed out, no cookie banner. Also used for the 1200 × 630 share image (cropped from the top). ${desktop}`,
     browser: true,
   },
   {
-    id: 'romish-dashboard',
-    file: 'romish-dashboard.png',
-    alt: 'Romish Play page: a rank card with Elo and an Elo chart on the left, party slots and a Find Match button in the centre, and the Live matches list below',
+    id: 'romish-play',
+    file: 'romish-play.webp',
+    label: 'Play page',
+    alt: 'The Romish Play page: the rank card with Elo, party slots, the Find Match button and the live matches list',
     caption: 'The Play page: party slots, the Find Match button, rank and Elo history, and live matches.',
     aspect: '16 / 9',
-    size: '1600 × 900 or larger',
+    size: '2400 wide',
     capture: `Play page (/dashboard): Find Match button, party slots, rank card with the Elo chart, and at least one live match card if you can. ${desktop}`,
     browser: true,
   },
   {
     id: 'romish-ready-check',
-    file: 'romish-ready-check.png',
-    alt: 'The "Match found" ready check: 18 seconds left to accept, 4 of 10 players accepted, and an Accept button',
+    file: 'romish-ready-check.webp',
+    label: 'Ready check',
+    alt: 'The "Match found" ready check: a countdown, how many of the ten players have accepted, and an Accept button',
     caption: 'Ten players found: everyone has 25 seconds to accept.',
     aspect: '446 / 478',
-    size: 'The modal alone, cropped, about 450 × 480',
+    size: 'The modal alone, cropped, at 2x (about 900 × 960)',
     capture: 'The "Match found" ready check modal, cropped to the modal, with the countdown running and a few players accepted.',
     browser: false,
     maxWidth: '360px',
   },
   {
     id: 'romish-draft',
-    file: 'romish-draft.png',
-    alt: "Captain draft, pick 3 of 8: Team Alpha has three players, Team Beta's captain is picking with 18 seconds left, and six players are still available",
+    file: 'romish-draft.webp',
+    label: 'Captain draft',
+    alt: 'Captain draft: both team columns, the captain on the clock with a countdown, and the players still available to pick',
     caption: 'The captain draft. The server picks at random if the clock runs out.',
     aspect: '16 / 9',
-    size: '1600 × 900 or larger',
+    size: '2400 wide',
     capture: `Captain draft mid-pick: both team columns visible, the timer running. ${desktop}`,
     browser: true,
   },
   {
     id: 'romish-veto',
-    file: 'romish-veto.png',
-    alt: 'Map veto, ban 4 of 6: Dust II, Inferno and Nuke are banned, and the captain chooses from the four maps left',
+    file: 'romish-veto.webp',
+    label: 'Map veto',
+    alt: 'Map veto: some maps already banned, and the captain on the clock choosing from the maps left',
     caption: 'The map veto: alternating bans until one map is left.',
     aspect: '16 / 9',
-    size: '1600 × 900 or larger',
-    capture: `Map veto with some maps banned and the turn timer running (the current shot shows the timer at 0). ${desktop}`,
+    size: '2400 wide',
+    capture: `Map veto with some maps banned and the turn timer running. ${desktop}`,
     browser: true,
   },
   {
     id: 'romish-setup',
-    file: 'romish-setup.png',
-    alt: 'Server setup for a match on Mirage: "Creating server" and "Configuring match" are done and "Almost ready" is in progress, between the two team rosters',
+    file: 'romish-setup.webp',
+    label: 'Server setup',
+    alt: 'Server setup: progress steps for creating and configuring the game server, between the two team rosters',
     caption: 'Server setup, shown while the platform starts and configures the game server.',
     aspect: '16 / 9',
-    size: '1600 × 900 or larger',
-    capture: `Server setup screen with the progress steps. Optionally a second shot of the connect screen, with the IP and password hidden. ${desktop}`,
+    size: '2400 wide',
+    capture: `Server setup screen with the progress steps. ${desktop}`,
     browser: true,
   },
   {
     id: 'romish-live',
-    file: 'romish-live.png',
-    alt: 'Live match on Mirage: Team Alpha leads 13 to 9, with the server address blurred, copy buttons and a Reconnect button between the rosters',
+    file: 'romish-live.webp',
+    label: 'Live match',
+    alt: 'A live match: the score, both team rosters, and the connect details with the server address hidden',
     caption: 'A live match. The score updates round by round from the game server.',
     aspect: '16 / 9',
-    size: '1600 × 900 or larger',
-    capture: `Live match with the score and both rosters. Hide the server IP. ${desktop}`,
+    size: '2400 wide',
+    capture: `Live match with the score and both rosters. Hide the server IP (re-measure its blur region in scripts/optimize-images.mjs). ${desktop}`,
     browser: true,
   },
   {
     id: 'romish-results',
-    file: 'romish-results.png',
-    alt: "Match results on Mirage: Team Alpha wins 13 to 9, with each player's K/D/A and Elo change, the match MVP, and Queue again, Back to home and View profile buttons",
+    file: 'romish-results.webp',
+    label: 'Results',
+    alt: "Match results: the winning team and score, each player's K/D/A and Elo change, and the match MVP",
     caption: "Results: every player's K/D/A and Elo change, and the match MVP.",
     aspect: '16 / 9',
-    size: '1600 × 900 or larger',
+    size: '2400 wide',
     capture: `Results screen with the winner, score, MVP, K/D/A and Elo changes. ${desktop}`,
     browser: true,
   },
   {
     id: 'romish-mobile',
-    file: 'romish-mobile.png',
+    file: 'romish-mobile.webp',
+    label: 'Phone screens',
     alt: 'Four phone screens of the match flow side by side: the captain draft, the map veto, server setup and the results',
     caption: 'The same match flow on a phone: draft, veto, server setup and results.',
     aspect: '1760 / 924',
-    size: 'Built by scripts/compose-mobile.mjs from 390 × 844 phone shots in assets-src/mobile/',
+    size: 'Four 390 × 844 phone shots side by side (scripts/compose-mobile.mjs builds it from assets-src/mobile/)',
     capture:
-      'Phone screens of the match flow at 390px wide (device emulation). Put them in assets-src/mobile/ and run node scripts/compose-mobile.mjs.',
+      'Phone screens of the match flow at 390px wide (device emulation): draft, veto, server setup and results. Put them in assets-src/mobile/ and run node scripts/compose-mobile.mjs, or supply your own composite.',
     browser: false,
+  },
+  {
+    id: 'romish-logo-exploration',
+    file: 'romish-logo-exploration.webp',
+    label: 'Logo concept board',
+    alt: 'The Romish logo concept board: eight concepts from three rounds, each shown as an app icon, a 16px favicon and in the navbar',
+    caption: 'Eight concepts, each tested as an icon, a favicon and in the navbar.',
+    aspect: '16 / 9',
+    size: '2400 wide',
+    capture: 'The concept board from rounds 1 to 3, exported at 2400px wide.',
+    browser: false,
+  },
+  {
+    id: 'romish-before',
+    file: 'romish-before.webp',
+    label: 'Play page, before',
+    alt: 'The Romish Play page before the rebrand, with the old ROMISH wordmark and gold accents',
+    caption: 'The Play page before the rebrand.',
+    aspect: '16 / 9',
+    size: '2400 wide, same viewport as romish-after',
+    capture: `The Play page on the old brand. Same viewport, account and state as romish-after. ${desktop}`,
+    browser: true,
+  },
+  {
+    id: 'romish-after',
+    file: 'romish-after.webp',
+    label: 'Play page, after',
+    alt: 'The same Play page after the rebrand, with the Ready ring logo and amber accents',
+    caption: 'The Play page after the rebrand.',
+    aspect: '16 / 9',
+    size: '2400 wide, same viewport as romish-before',
+    capture: `The Play page on the new brand. Same viewport, account and state as romish-before. ${desktop}`,
+    browser: true,
   },
   {
     id: 'romish-social',
     file: 'romish-social.png',
+    label: 'Friends panel',
     alt: "The friends panel: add a friend by name or Steam ID, tabs for online, all, pending and blocked, and one sent request with the other player's name blurred",
     caption: 'The friends panel slides out from any page.',
     aspect: '394 / 440',
@@ -397,6 +445,7 @@ export const romishImages = [
   {
     id: 'romish-admin',
     file: 'romish-admin.png',
+    label: 'Admin overview',
     alt: 'Admin overview: online, queue and match counters, service health for the database, Redis, Pusher and DatHost, and recent registrations',
     caption: 'The admin overview: live counts and the health of every dependency.',
     aspect: '16 / 9',
@@ -407,6 +456,7 @@ export const romishImages = [
   {
     id: 'romish-match-lab',
     file: 'romish-match-lab.png',
+    label: 'UI Studio',
     alt: 'The admin UI Studio: cards that open each real match and queue screen (player draft, map veto, server loading, live match, match summary, match found and more) with simulated data',
     caption: 'UI Studio opens every real screen with simulated data. Match Lab, in the next tab, runs the match rules.',
     aspect: '16 / 9',
@@ -417,6 +467,7 @@ export const romishImages = [
   {
     id: 'romish-profile',
     file: 'romish-profile.png',
+    label: 'Player profile',
     alt: 'Player profile: Elo 1,000, win rate, match count and a Trust Score of 100 out of 100, with the Steam ID blurred',
     caption: 'Every player starts with a Trust Score of 100.',
     aspect: '16 / 9',
@@ -427,6 +478,7 @@ export const romishImages = [
   {
     id: 'romish-servers',
     file: 'romish-servers.png',
+    label: 'Server health',
     alt: 'Admin server health page: latency checks for MongoDB, Redis, Pusher and DatHost, game server status with the address blurred, and owner-only power controls',
     caption: 'Server health in the admin panel. Only the owner can power the real server.',
     aspect: '16 / 9',
@@ -460,7 +512,8 @@ export interface DeepDive {
   problem: string
   did: string[]
   robust: string[]
-  snippet?: { label: string; code: string }
+  /** `toggle` is the summary of the <details> that holds the code. */
+  snippet?: { label: string; toggle: string; code: string }
   table?: Table
   image?: RomishImageId
 }
@@ -474,23 +527,29 @@ export interface Lesson {
 
 export const romishCaseStudy = {
   seo: {
-    title: 'Romish case study: CS2 matchmaking on Next.js | Marius Constantin',
+    title: 'Romish case study: CS2 10-player matchmaking | Marius Constantin',
     description:
-      'How I built Romish, a CS2 10-player matchmaking platform on Next.js, MongoDB, Redis and Pusher: server-side timers, session locks, automated game servers and Elo.',
-    ogImage: '/og/romish.png',
-    ogImageAlt: 'Romish case study: a CS2 10-player matchmaking platform',
+      'How I built Romish, a CS2 10-player matchmaking platform: server-side timers, real-time sync, game-server automation and the brand.',
+    // 1200 × 630 crop of the landing screenshot, written by `npm run images` once romish-landing exists
+    ogImage: '/og/romish-og.jpg',
+    ogImageAlt: 'The Romish landing page, with the Ready ring logo',
+    // Used until then
+    ogFallback: '/og/romish.png',
+    ogFallbackAlt: 'Romish case study: a CS2 10-player matchmaking platform',
   },
 
   hero: {
     eyebrow: 'Case study',
     title: 'Romish',
     tagline:
-      'A CS2 10-player matchmaking platform: Steam sign-in, queue, ready check, captain draft, map veto, automated game servers and Elo.',
+      'A CS2 10-player matchmaking platform where captains draft teams and ban maps, then play on a server the app sets up itself.',
     meta: [
-      { label: 'Role', value: 'Solo full-stack developer' },
+      { label: 'Role', value: 'Solo, design to deployment' },
       { label: 'Timeline', value: featuredProject.timeline },
       { label: 'Status', value: featuredProject.status },
+      { label: 'Stack', value: 'Next.js 16, TypeScript, MongoDB, Redis, Pusher' },
     ],
+    walkthrough: { label: 'Code walkthrough', href: '/#contact', note: 'Private repo' },
     stack: [
       'Next.js 16 (App Router)',
       'React 19',
@@ -517,7 +576,17 @@ export const romishCaseStudy = {
     browserUrl: 'romish.org',
   },
 
-  toc: { title: 'On this page', readingTime: 'min read' },
+  toc: { title: 'On this page', readingTime: 'min read', backToTop: 'Back to top' },
+
+  glance: {
+    title: 'At a glance',
+    stats: [
+      { value: '10', label: 'players synced in real time per match' },
+      { value: '7', label: 'match phases, from Find Match to Results' },
+      { value: '8', label: 'server-side deadline types, none depending on an open browser tab' },
+      { value: '40', label: 'automated failure-path checks run by bot scripts' },
+    ],
+  },
 
   tldr: {
     id: 'tldr',
@@ -586,7 +655,7 @@ export const romishCaseStudy = {
         id: 'find',
         label: 'Find Match',
         clock: 'Solo or party',
-        image: 'romish-dashboard' as RomishImageId,
+        image: 'romish-play' as RomishImageId,
         points: [
           'Queue solo or as a party of up to five. The party leader queues everyone.',
           'Every member is checked before joining: bans, queue access, cooldowns and any other active session.',
@@ -668,7 +737,12 @@ export const romishCaseStudy = {
     eyebrow: 'Engineering deep dives',
     title: 'What made it harder than a CRUD app',
     takeaway: 'Six problems, each with the problem, what I built, and why it holds up.',
-    labels: { problem: 'The problem', did: 'What I built', robust: 'Why it holds up' },
+    labels: {
+      problem: 'The problem',
+      did: 'What I built',
+      robust: 'Why it holds up',
+      more: 'Show what I built and why it holds up',
+    },
     items: [
       {
         id: 'dd-timers',
@@ -689,6 +763,7 @@ export const romishCaseStudy = {
         ],
         snippet: {
           label: 'Pseudocode',
+          toggle: 'Show the scheduler pseudocode',
           code: `schedule(task, dueAt):
   ZADD deadlines dueAt task        # same task again = new deadline
   if serverless:
@@ -720,6 +795,7 @@ sweep():                           # every 2s, or on a QStash wake-up
         ],
         snippet: {
           label: 'Pseudocode',
+          toggle: 'Show the session lock pseudocode',
           code: `claimSessions(members, session):   # one Lua script: all or nothing
   for m in members:
     if EXISTS session:{m}: return CONFLICT(m)
@@ -754,6 +830,7 @@ readSession(user):                  # every read reconciles
         ],
         snippet: {
           label: 'The match config MatchZy loads (trimmed)',
+          toggle: 'Show the MatchZy match config',
           code: `{
   "matchid": 1042,
   "team1": { "name": "<alpha captain>", "players": { "<steam64>": "<name>" } },
@@ -789,6 +866,7 @@ readSession(user):                  # every read reconciles
         ],
         snippet: {
           label: 'Elo after a match',
+          toggle: 'Show the Elo calculation',
           code: `ratingA   = average(team A Elo)
 ratingB   = average(team B Elo)
 expectedA = 1 / (1 + 10 ^ ((ratingB - ratingA) / 400))
@@ -995,6 +1073,50 @@ changeB   = -changeA                           # zero-sum: team B mirrors it`,
     ],
   },
 
+  brand: {
+    id: 'brand',
+    nav: 'Brand and design',
+    eyebrow: 'Brand and design',
+    title: 'From placeholder to the Ready ring',
+    takeaway: 'A mark that still reads at 16px, and a quiet system with one warm accent.',
+    paragraphs: [
+      'Romish ran for most of its life on a working name and a Spartan-helmet placeholder. Before launch I rebuilt the brand around the product itself.',
+      'The name is Rom-ish: Romanian plus Irish. I explored eight logo concepts over three rounds, from geometric monograms to heritage ideas like the Dacian draco and a wolf-teeth shield, and tested each one as an app icon, a 16px favicon and inside the navbar.',
+      'The winner is the Ready ring: a heavy ring with a notch and an amber dot. It reads as a crosshair and as the ready state, the moment a match pops, and it still works at 16px where the detailed concepts fell apart.',
+      // Once the brand rollout is merged in the Romish repo, change to "are mapped onto shadcn's variables, so existing components picked up the brand without rewrites."
+      "The system is deliberately quiet: one warm accent against a dark UI, Unbounded for the display voice, Geist for the interface, and Geist Mono for anything that changes or lines up, like scores, Elo and timers. The colours live as tokens in Tailwind v4 and are being mapped onto shadcn's variables, so existing components pick up the brand without rewrites.",
+    ],
+    exploration: 'romish-logo-exploration' as RomishImageId,
+    mark: { title: 'The mark', sizes: [32, 16] },
+    palette: {
+      title: 'Palette',
+      // `on` is the text colour used on the swatch (at least 5:1 on each)
+      swatches: [
+        { name: 'Background', hex: '#0B0C0E', on: '#EDEBE6' },
+        { name: 'Surface', hex: '#121316', on: '#EDEBE6' },
+        { name: 'Ink', hex: '#EDEBE6', on: '#0B0C0E' },
+        { name: 'Muted', hex: '#9398A1', on: '#0B0C0E' },
+        { name: 'Amber', hex: '#FFAA1F', on: '#0B0C0E' },
+        { name: 'Team beta', hex: '#4C7DFF', on: '#0B0C0E' },
+      ],
+    },
+    type: {
+      title: 'Type',
+      samples: [
+        { font: 'display', text: 'ROMISH', label: 'Unbounded 600, display' },
+        { font: 'sans', text: 'Map veto · 20s per ban', label: 'Geist, interface' },
+        { font: 'mono', text: '13 : 11 · +18 Elo', label: 'Geist Mono, scores, Elo and timers' },
+      ],
+    },
+    beforeAfter: {
+      title: 'Before and after',
+      before: 'romish-before' as RomishImageId,
+      after: 'romish-after' as RomishImageId,
+      labels: { before: 'Before', after: 'After' },
+      caption: 'Before and after the rebrand.',
+    },
+  },
+
   testing: {
     id: 'testing',
     nav: 'Testing',
@@ -1080,7 +1202,7 @@ changeB   = -changeA                           # zero-sum: team B mirrors it`,
 }
 
 /** Keys that aren't read as prose: metadata, code, screen-reader-only text and TODO notes. */
-const unread = new Set(['seo', 'code', 'diagramDesc', 'todo', 'id', 'nav', 'image', 'mobileImage'])
+const unread = new Set(['seo', 'code', 'diagramDesc', 'todo', 'id', 'nav', 'image', 'mobileImage', 'hex', 'on', 'font'])
 
 /** Words across the prose in a value, for reading-time estimates. */
 export function countWords(value: unknown): number {

@@ -6,7 +6,8 @@ import { RouterLink } from 'vue-router'
 const props = withDefaults(
   defineProps<{
     href: string
-    variant?: 'primary' | 'secondary' | 'ghost'
+    /** `brand` is the Romish amber button; it needs the `.romish` scope from main.css. */
+    variant?: 'primary' | 'secondary' | 'ghost' | 'brand'
     size?: 'sm' | 'md'
     external?: boolean
   }>(),
@@ -22,6 +23,7 @@ const classes = computed(() => [
     primary: 'bg-accent text-accent-fg hover:bg-accent-hover',
     secondary: 'border border-line-strong bg-surface text-fg hover:border-muted',
     ghost: 'text-muted hover:text-fg',
+    brand: 'bg-(--c-brand) text-(--c-brand-fg) hover:bg-(--c-brand-hover)',
   }[props.variant],
 ])
 </script>

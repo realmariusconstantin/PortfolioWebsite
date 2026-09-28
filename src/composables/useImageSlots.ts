@@ -9,7 +9,8 @@ export const lightboxKey: InjectionKey<(shot: Screenshot) => void> = Symbol('lig
 export const hasImage = (id: string) => id in imageMeta
 
 /**
- * True if a slot takes up space on the page: always in dev (the placeholder shows),
- * and in production only once the image exists. Layouts use it to drop the image column.
+ * True if a slot takes up space on the page. Layouts use it to drop the image column.
+ * A slot whose image isn't exported yet renders a labelled placeholder, so this is true for any slot.
+ * To hide missing screenshots in production instead: `!!id && (import.meta.env.DEV || hasImage(id))`.
  */
-export const showsSlot = (id: string | undefined) => !!id && (import.meta.env.DEV || hasImage(id))
+export const showsSlot = (id: string | undefined) => !!id

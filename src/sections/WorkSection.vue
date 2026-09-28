@@ -2,6 +2,7 @@
 import AppIcon from '@/components/AppIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import ImageSlot from '@/components/ImageSlot.vue'
+import RomishMark from '@/components/RomishMark.vue'
 import SectionHeading from '@/components/SectionHeading.vue'
 import TechChip from '@/components/TechChip.vue'
 import { featuredProject as romish, moreOnGithub, person, projects, sections } from '@/data/content'
@@ -23,7 +24,10 @@ const published = projects.filter((p) => !p.draft)
             <span aria-hidden="true">·</span>
             <span>{{ romish.status }}</span>
           </p>
-          <h3 id="romish-title" class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{{ romish.title }}</h3>
+          <h3 id="romish-title" class="mt-3 flex items-center gap-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+            <RomishMark size="0.9em" decorative />
+            {{ romish.title }}
+          </h3>
           <p class="mt-3 text-lg leading-relaxed text-pretty">{{ romish.summary }}</p>
 
           <ul class="mt-5 flex flex-wrap gap-1.5" aria-label="Tech stack">

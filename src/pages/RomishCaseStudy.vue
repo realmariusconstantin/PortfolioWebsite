@@ -3,14 +3,17 @@ import { provide, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useSeo } from '@/composables/useSeo'
 import { useScrollSpy } from '@/composables/useScrollSpy'
-import { lightboxKey, showsSlot } from '@/composables/useImageSlots'
+import { hasImage, lightboxKey, showsSlot } from '@/composables/useImageSlots'
 import AppIcon from '@/components/AppIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import ImageLightbox from '@/components/ImageLightbox.vue'
 import ImageSlot from '@/components/ImageSlot.vue'
+import RomishMark from '@/components/RomishMark.vue'
 import SectionHeading from '@/components/SectionHeading.vue'
 import TechChip from '@/components/TechChip.vue'
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.vue'
+import BackToTop from '@/components/case-study/BackToTop.vue'
+import BrandBoard from '@/components/case-study/BrandBoard.vue'
 import CaseStudyToc, { type TocItem } from '@/components/case-study/CaseStudyToc.vue'
 import DataTable from '@/components/case-study/DataTable.vue'
 import DeepDiveBlock from '@/components/case-study/DeepDiveBlock.vue'
@@ -20,20 +23,25 @@ import { countWords, featuredProject, person, projects, romishCaseStudy as cs, s
 const dev = import.meta.env.DEV
 const url = `${site.url}/projects/romish`
 
+// The share image is cropped from the landing screenshot by `npm run images`; until that exists, use the old one
+const og = hasImage(cs.hero.image)
+  ? { image: cs.seo.ogImage, alt: cs.seo.ogImageAlt }
+  : { image: cs.seo.ogFallback, alt: cs.seo.ogFallbackAlt }
+
 useSeo({
   title: cs.seo.title,
   description: cs.seo.description,
   path: '/projects/romish',
   type: 'article',
-  image: cs.seo.ogImage,
-  imageAlt: cs.seo.ogImageAlt,
+  image: og.image,
+  imageAlt: og.alt,
   jsonLd: {
     '@type': 'CreativeWork',
     name: `${cs.hero.title} case study`,
     headline: cs.seo.title,
     description: cs.seo.description,
     url,
-    image: new URL(cs.seo.ogImage, site.url).href,
+    image: new URL(og.image, site.url).href,
     inLanguage: 'en',
     author: { '@type': 'Person', name: person.name, url: site.url },
     keywords: cs.hero.stack.join(', '),
@@ -56,6 +64,7 @@ provide(lightboxKey, (shot) => lightbox.value?.open(shot))
 // Lessons only ship once confirmed (set `confirmed: false` on a lesson to hide it); dev shows them all
 const lessons = cs.lessons.items.filter((l) => l.confirmed || dev)
 
+// Section numbers on the page and in the TOC both come from this order
 const toc: TocItem[] = [
   { id: cs.tldr.id, label: cs.tldr.nav },
   { id: cs.problem.id, label: cs.problem.nav },
@@ -68,6 +77,7 @@ const toc: TocItem[] = [
   { id: cs.architecture.id, label: cs.architecture.nav },
   { id: cs.failure.id, label: cs.failure.nav },
   { id: cs.platform.id, label: cs.platform.nav },
+  { id: cs.brand.id, label: cs.brand.nav },
   { id: cs.testing.id, label: cs.testing.nav },
   ...(lessons.length ? [{ id: cs.lessons.id, label: cs.lessons.nav }] : []),
   { id: cs.status.id, label: cs.status.nav },
@@ -78,12 +88,16 @@ useScrollSpy(toc.map((t) => t.id))
 const readingMinutes = Math.max(1, Math.round(countWords({ ...cs, lessons: { ...cs.lessons, items: lessons } }) / 220))
 const sectionNumber = (id: string) => toc.findIndex((t) => t.id === id) + 1
 const nextProject = projects.find((p) => !p.draft)
+const beforeAfter = [
+  { id: cs.brand.beforeAfter.before, label: cs.brand.beforeAfter.labels.before },
+  { id: cs.brand.beforeAfter.after, label: cs.brand.beforeAfter.labels.after },
+]
 </script>
 
 <template>
-  <article class="pb-8">
-    <!-- 1. Hero -->
-    <header class="container-content pt-10 sm:pt-16">
+  <article class="romish pb-8">
+    <!-- Hero -->
+    <header id="top" class="container-content pt-10 sm:pt-16">
       <RouterLink
         :to="{ path: '/', hash: '#work' }"
         class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-fg"
@@ -97,13 +111,16 @@ const nextProject = projects.find((p) => !p.draft)
         <span aria-hidden="true">·</span>
         <span>{{ readingMinutes }} {{ cs.toc.readingTime }}</span>
       </p>
-      <h1 class="mt-3 text-display font-semibold">{{ cs.hero.title }}</h1>
+      <h1 class="mt-3 flex items-center gap-4 text-display font-semibold">
+        <RomishMark size="0.9em" decorative />
+        {{ cs.hero.title }}
+      </h1>
       <p class="mt-5 max-w-3xl text-lg leading-relaxed text-pretty sm:text-xl">{{ cs.hero.tagline }}</p>
 
-      <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-y border-line py-6 sm:grid-cols-4">
+      <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-y border-line py-6 sm:grid-cols-3 lg:grid-cols-5">
         <div v-for="item in cs.hero.meta" :key="item.label">
           <dt class="eyebrow">{{ item.label }}</dt>
-          <dd class="mt-1.5 text-[0.9375rem]">
+          <dd class="mt-1.5 text-[0.9375rem] text-pretty">
             {{ item.value }}
           </dd>
         </div>
@@ -121,8 +138,14 @@ const nextProject = projects.find((p) => !p.draft)
               {{ link.label }} <AppIcon name="arrow-up-right" :size="14" />
               <span class="sr-only">(opens in a new tab)</span>
             </a>
+            <RouterLink
+              :to="cs.hero.walkthrough.href"
+              class="inline-flex items-center gap-1 text-accent hover:text-accent-hover"
+            >
+              {{ cs.hero.walkthrough.label }} <AppIcon name="arrow-right" :size="14" />
+            </RouterLink>
             <span class="inline-flex items-center gap-1.5 text-sm text-muted">
-              <AppIcon name="lock" :size="13" /> {{ featuredProject.repoNote }}
+              <AppIcon name="lock" :size="13" /> {{ cs.hero.walkthrough.note }}
             </span>
           </dd>
         </div>
@@ -138,9 +161,21 @@ const nextProject = projects.find((p) => !p.draft)
         :id="cs.hero.image"
         class="mt-12"
         :url="cs.hero.browserUrl"
+        frame-class="romish-dark"
         eager
       />
     </header>
+
+    <!-- At a glance -->
+    <section aria-labelledby="glance-title" class="container-content mt-16">
+      <h2 id="glance-title" class="eyebrow">{{ cs.glance.title }}</h2>
+      <ul v-reveal class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <li v-for="stat in cs.glance.stats" :key="stat.value" class="rounded-lg border border-line bg-surface p-5 sm:p-6">
+          <p class="font-mono text-4xl font-semibold tracking-tight text-accent sm:text-5xl">{{ stat.value }}</p>
+          <p class="mt-3 text-sm leading-relaxed text-pretty text-muted">{{ stat.label }}</p>
+        </li>
+      </ul>
+    </section>
 
     <div class="container-content mt-16 lg:mt-24 lg:grid lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-14">
       <aside class="hidden lg:block">
@@ -152,7 +187,7 @@ const nextProject = projects.find((p) => !p.draft)
           <CaseStudyToc :items="toc" :title="cs.toc.title" mode="mobile" />
         </div>
 
-        <!-- 2. TL;DR -->
+        <!-- 01 TL;DR -->
         <section :id="cs.tldr.id" aria-labelledby="tldr-title" class="scroll-mt-24 pt-12 lg:pt-0">
           <SectionHeading
             id="tldr-title"
@@ -175,7 +210,7 @@ const nextProject = projects.find((p) => !p.draft)
           </ul>
         </section>
 
-        <!-- 3. Problem -->
+        <!-- 02 Problem -->
         <section :id="cs.problem.id" aria-labelledby="problem-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="problem-title"
@@ -194,7 +229,7 @@ const nextProject = projects.find((p) => !p.draft)
           </ul>
         </section>
 
-        <!-- 4. Player journey -->
+        <!-- 03 Player journey -->
         <section :id="cs.journey.id" aria-labelledby="journey-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="journey-title"
@@ -245,9 +280,10 @@ const nextProject = projects.find((p) => !p.draft)
             class="mt-16"
             sizes="(min-width: 1100px) 860px, 100vw"
           />
+          <BackToTop :label="cs.toc.backToTop" />
         </section>
 
-        <!-- 5. Engineering deep dives -->
+        <!-- 04 Engineering deep dives -->
         <section :id="cs.deepDives.id" aria-labelledby="deep-dives-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="deep-dives-title"
@@ -265,9 +301,10 @@ const nextProject = projects.find((p) => !p.draft)
               :labels="cs.deepDives.labels"
             />
           </div>
+          <BackToTop :label="cs.toc.backToTop" />
         </section>
 
-        <!-- 6. Architecture -->
+        <!-- 05 Architecture -->
         <section :id="cs.architecture.id" aria-labelledby="architecture-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="architecture-title"
@@ -283,9 +320,10 @@ const nextProject = projects.find((p) => !p.draft)
             <p class="mt-2 max-w-2xl leading-relaxed text-pretty text-muted">{{ cs.architecture.state.rule }}</p>
             <DataTable class="mt-5" :table="cs.architecture.state.table" />
           </div>
+          <BackToTop :label="cs.toc.backToTop" />
         </section>
 
-        <!-- 7. Handling failure -->
+        <!-- 06 Handling failure -->
         <section :id="cs.failure.id" aria-labelledby="failure-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="failure-title"
@@ -297,9 +335,10 @@ const nextProject = projects.find((p) => !p.draft)
           <div v-reveal class="sm:rounded-lg sm:border sm:border-line sm:bg-surface sm:px-8 sm:py-4">
             <DataTable :table="cs.failure.table" />
           </div>
+          <BackToTop :label="cs.toc.backToTop" />
         </section>
 
-        <!-- 8. Beyond the match -->
+        <!-- 07 Beyond the match -->
         <section :id="cs.platform.id" aria-labelledby="platform-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="platform-title"
@@ -324,9 +363,53 @@ const nextProject = projects.find((p) => !p.draft)
               <ImageSlot v-if="showsSlot(card.image)" :id="card.image!" v-reveal sizes="(min-width: 768px) 430px, 100vw" />
             </template>
           </div>
+          <BackToTop :label="cs.toc.backToTop" />
         </section>
 
-        <!-- 9. Testing and tooling -->
+        <!-- 08 Brand and design -->
+        <section :id="cs.brand.id" aria-labelledby="brand-title" class="scroll-mt-24 pt-24">
+          <SectionHeading
+            id="brand-title"
+            :index="sectionNumber(cs.brand.id)"
+            :eyebrow="cs.brand.eyebrow"
+            :title="cs.brand.title"
+            :takeaway="cs.brand.takeaway"
+          />
+          <div v-reveal class="max-w-2xl space-y-4 leading-relaxed text-pretty text-muted">
+            <p v-for="paragraph in cs.brand.paragraphs" :key="paragraph">{{ paragraph }}</p>
+          </div>
+
+          <ImageSlot
+            v-if="showsSlot(cs.brand.exploration)"
+            :id="cs.brand.exploration"
+            v-reveal
+            class="mt-12"
+            sizes="(min-width: 1100px) 860px, 100vw"
+          />
+
+          <BrandBoard v-reveal class="mt-12" />
+
+          <div v-reveal class="mt-10">
+            <h3 class="text-lg font-semibold">{{ cs.brand.beforeAfter.title }}</h3>
+            <figure class="mt-4">
+              <div class="grid gap-6 sm:grid-cols-2 sm:gap-4">
+                <div v-for="side in beforeAfter" :key="side.id" class="min-w-0">
+                  <p class="mb-2 eyebrow">{{ side.label }}</p>
+                  <ImageSlot
+                    v-if="showsSlot(side.id)"
+                    :id="side.id"
+                    :caption="false"
+                    sizes="(min-width: 1100px) 420px, (min-width: 640px) 50vw, 100vw"
+                  />
+                </div>
+              </div>
+              <figcaption class="mt-3 text-sm leading-relaxed text-muted">{{ cs.brand.beforeAfter.caption }}</figcaption>
+            </figure>
+          </div>
+          <BackToTop :label="cs.toc.backToTop" />
+        </section>
+
+        <!-- 09 Testing and tooling -->
         <section :id="cs.testing.id" aria-labelledby="testing-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="testing-title"
@@ -348,9 +431,10 @@ const nextProject = projects.find((p) => !p.draft)
             class="mt-12"
             sizes="(min-width: 1100px) 860px, 100vw"
           />
+          <BackToTop :label="cs.toc.backToTop" />
         </section>
 
-        <!-- 10. Lessons learned: only confirmed lessons ship -->
+        <!-- 10 Lessons learned: only confirmed lessons ship -->
         <section
           v-if="lessons.length"
           :id="cs.lessons.id"
@@ -373,7 +457,7 @@ const nextProject = projects.find((p) => !p.draft)
           </ol>
         </section>
 
-        <!-- 11. Status -->
+        <!-- 11 Status -->
         <section :id="cs.status.id" aria-labelledby="status-title" class="scroll-mt-24 pt-24">
           <SectionHeading
             id="status-title"
@@ -397,13 +481,13 @@ const nextProject = projects.find((p) => !p.draft)
       </div>
     </div>
 
-    <!-- 12. CTA + project navigation -->
+    <!-- CTA + project navigation -->
     <section aria-labelledby="cta-title" class="container-content mt-24">
       <div v-reveal class="rounded-lg border border-line bg-surface p-8 sm:p-12">
         <h2 id="cta-title" class="text-h2 font-semibold">{{ cs.cta.title }}</h2>
         <p class="mt-4 max-w-xl leading-relaxed text-pretty text-muted">{{ cs.cta.body }}</p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <BaseButton href="/#contact" variant="primary">
+          <BaseButton href="/#contact" variant="brand">
             {{ cs.cta.contact }}
             <AppIcon name="arrow-right" :size="16" />
           </BaseButton>

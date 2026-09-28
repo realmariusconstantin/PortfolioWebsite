@@ -9,23 +9,25 @@ export interface TocItem {
 }
 
 /**
- * "On this page". Desktop: a sticky list in the left column with the current section highlighted.
+ * "On this page", numbered like the section headings (01, 02, ...).
+ * Desktop: a sticky list in the left column with the current section highlighted.
  * Phones: a sticky bar under the header that expands into the same list.
  */
 const props = defineProps<{ items: TocItem[]; title: string; mode: 'desktop' | 'mobile' }>()
 
 const open = ref(false)
-const current = computed(() => props.items.find((i) => i.id === activeSection.value))
+const current = computed(() => props.items.findIndex((i) => i.id === activeSection.value))
+const number = (index: number) => String(index + 1).padStart(2, '0')
 </script>
 
 <template>
   <nav v-if="mode === 'desktop'" :aria-label="title" class="sticky top-24 max-h-[calc(100dvh-7rem)] overflow-y-auto pb-6">
     <p class="eyebrow">{{ title }}</p>
     <ol class="mt-4 space-y-1 border-l border-line text-sm">
-      <li v-for="item in items" :key="item.id">
+      <li v-for="(item, i) in items" :key="item.id">
         <a
           :href="`#${item.id}`"
-          class="-ml-px block border-l py-1.5 pl-4 transition-colors"
+          class="-ml-px flex gap-2.5 border-l py-1.5 pl-4 transition-colors"
           :class="
             activeSection === item.id
               ? 'border-accent font-medium text-fg'
@@ -33,11 +35,12 @@ const current = computed(() => props.items.find((i) => i.id === activeSection.va
           "
           :aria-current="activeSection === item.id ? 'location' : undefined"
         >
-          {{ item.label }}
+          <span class="font-mono text-xs leading-5 text-accent">{{ number(i) }}</span>
+          <span>{{ item.label }}</span>
         </a>
         <ol v-if="item.children" class="mb-1 space-y-0.5">
           <li v-for="child in item.children" :key="child.id">
-            <a :href="`#${child.id}`" class="block py-1 pl-7 text-[0.8125rem] text-muted transition-colors hover:text-fg">
+            <a :href="`#${child.id}`" class="block py-1 pl-12 text-[0.8125rem] text-muted transition-colors hover:text-fg">
               {{ child.label }}
             </a>
           </li>
@@ -55,7 +58,9 @@ const current = computed(() => props.items.find((i) => i.id === activeSection.va
     <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6">
       <span class="min-w-0 truncate">
         <span class="eyebrow">{{ title }}</span>
-        <span v-if="current" class="ml-2 font-medium">{{ current.label }}</span>
+        <span v-if="current >= 0" class="ml-2 font-medium">
+          <span class="font-mono text-xs text-accent">{{ number(current) }}</span> {{ items[current]!.label }}
+        </span>
       </span>
       <svg
         class="size-4 shrink-0 text-muted transition-transform"
@@ -71,14 +76,15 @@ const current = computed(() => props.items.find((i) => i.id === activeSection.va
     </summary>
     <nav :aria-label="title" class="max-h-[60dvh] overflow-y-auto px-4 pb-4 sm:px-6">
       <ol class="space-y-0.5 text-[0.9375rem]">
-        <li v-for="item in items" :key="item.id">
+        <li v-for="(item, i) in items" :key="item.id">
           <a
             :href="`#${item.id}`"
-            class="block rounded-sm py-2"
+            class="flex gap-3 rounded-sm py-2"
             :class="activeSection === item.id ? 'font-medium text-fg' : 'text-muted'"
             @click="open = false"
           >
-            {{ item.label }}
+            <span class="font-mono text-xs leading-6 text-accent">{{ number(i) }}</span>
+            <span>{{ item.label }}</span>
           </a>
         </li>
       </ol>

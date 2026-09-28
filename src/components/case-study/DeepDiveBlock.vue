@@ -6,8 +6,18 @@ import DataTable from './DataTable.vue'
 import { showsSlot } from '@/composables/useImageSlots'
 import type { DeepDive } from '@/data/content'
 
-/** One engineering deep dive: takeaway first, then the problem, what I built, and why it holds up. */
-defineProps<{ dive: DeepDive; index: number; labels: { problem: string; did: string; robust: string } }>()
+/**
+ * One engineering deep dive. The takeaway and the problem stay visible for skimming;
+ * the lists, table and code sit in <details> so readers open only what they want.
+ */
+defineProps<{
+  dive: DeepDive
+  index: number
+  labels: { problem: string; did: string; robust: string; more: string }
+}>()
+
+const toggle =
+  'flex cursor-pointer list-none items-center gap-2.5 rounded-md px-4 py-3 text-[0.9375rem] font-medium transition-colors select-none hover:bg-surface-2 sm:px-6 [&::-webkit-details-marker]:hidden'
 </script>
 
 <template>
@@ -23,29 +33,49 @@ defineProps<{ dive: DeepDive; index: number; labels: { problem: string; did: str
     <h4 class="mt-8 eyebrow">{{ labels.problem }}</h4>
     <p class="mt-2 max-w-3xl leading-relaxed text-pretty text-muted">{{ dive.problem }}</p>
 
-    <div class="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-10">
-      <div>
-        <h4 class="eyebrow">{{ labels.did }}</h4>
-        <ul class="mt-3 space-y-3">
-          <li v-for="item in dive.did" :key="item" class="flex gap-3 text-[0.9375rem] leading-relaxed">
-            <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-            <span class="text-pretty">{{ item }}</span>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="eyebrow">{{ labels.robust }}</h4>
-        <ul class="mt-3 space-y-3">
-          <li v-for="item in dive.robust" :key="item" class="flex gap-3 text-[0.9375rem] leading-relaxed">
-            <AppIcon name="check" :size="16" class="mt-1 text-accent" />
-            <span class="text-pretty">{{ item }}</span>
-          </li>
-        </ul>
-      </div>
+    <div class="mt-8 space-y-3">
+      <details class="group rounded-md border border-line">
+        <summary :class="toggle">
+          <AppIcon name="chevron-right" :size="16" class="text-accent transition-transform group-open:rotate-90" />
+          {{ labels.more }}
+        </summary>
+        <div class="border-t border-line px-4 py-6 sm:px-6">
+          <div class="grid gap-8 lg:grid-cols-2 lg:gap-10">
+            <div>
+              <h4 class="eyebrow">{{ labels.did }}</h4>
+              <ul class="mt-3 space-y-3">
+                <li v-for="item in dive.did" :key="item" class="flex gap-3 text-[0.9375rem] leading-relaxed">
+                  <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                  <span class="text-pretty">{{ item }}</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="eyebrow">{{ labels.robust }}</h4>
+              <ul class="mt-3 space-y-3">
+                <li v-for="item in dive.robust" :key="item" class="flex gap-3 text-[0.9375rem] leading-relaxed">
+                  <AppIcon name="check" :size="16" class="mt-1 text-accent" />
+                  <span class="text-pretty">{{ item }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <DataTable v-if="dive.table" class="mt-8" :table="dive.table" show-caption />
+        </div>
+      </details>
+
+      <details v-if="dive.snippet" class="group rounded-md border border-line">
+        <summary :class="toggle">
+          <AppIcon name="chevron-right" :size="16" class="text-accent transition-transform group-open:rotate-90" />
+          {{ dive.snippet.toggle }}
+        </summary>
+        <div class="border-t border-line p-4 sm:px-6 sm:py-5">
+          <CodeSnippet :label="dive.snippet.label" :code="dive.snippet.code" />
+        </div>
+      </details>
     </div>
 
-    <CodeSnippet v-if="dive.snippet" class="mt-8" v-bind="dive.snippet" />
-    <DataTable v-if="dive.table" class="mt-8" :table="dive.table" show-caption />
     <ImageSlot v-if="showsSlot(dive.image)" :id="dive.image!" class="mt-8" sizes="(min-width: 1100px) 800px, 100vw" />
   </article>
 </template>
+

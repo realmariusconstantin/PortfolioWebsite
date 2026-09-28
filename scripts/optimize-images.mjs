@@ -1,10 +1,13 @@
-// Converts the PNG originals in assets-src/ into responsive AVIF + WebP files in
+// Converts the originals in assets-src/ (WebP or PNG) into responsive AVIF + WebP files in
 // public/images/, and writes their dimensions to src/data/images.generated.ts.
 // Run with: npm run images
 //
 // The image slots (file names, alt text, what to capture) are defined in
-// src/data/content.ts (`romishImages`). A slot whose PNG isn't in assets-src/ yet
-// is skipped, and the site shows a placeholder for it in dev and nothing in production.
+// src/data/content.ts (`romishImages`). A slot whose original isn't in assets-src/ yet
+// is skipped, and the site shows a labelled placeholder for it.
+//
+// It also writes the case study's share image (public/og/romish-og.jpg, 1200 x 630,
+// cropped from the top of the landing screenshot after any blur).
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
 import sharp from 'sharp'
@@ -12,7 +15,8 @@ import { romishImages } from '../src/data/content.ts'
 
 const SRC = 'assets-src'
 const OUT = 'public/images'
-const WIDTHS = [480, 800, 1600]
+const WIDTHS = [480, 800, 1600, 2400]
+const OG = { slot: 'romish-landing', file: 'public/og/romish-og.jpg' }
 
 /**
  * Personal data to hide before export: Steam names, Steam IDs, IPs, passwords, admin URLs.
@@ -95,19 +99,20 @@ for (const slot of romishImages) {
     await resized.clone().webp({ quality: 78 }).toFile(`${OUT}/${slot.id}-${x}.webp`)
   }
   manifest[slot.id] = { width: out.width, height: out.height, widths: outWidths }
+  if (slot.id === OG.slot) {
+    await sharp(buf).resize(1200, 630, { fit: 'cover', position: 'top' }).jpeg({ quality: 85, mozjpeg: true }).toFile(OG.file)
+  }
   console.log(`${slot.id}: ${out.width}x${out.height} -> ${outWidths.join(', ')}`)
 }
 
 // Remove exports left over from slots that no longer have a source (renamed or refused)
 for (const file of await readdir(OUT)) {
   const match = /^(romish-[\w-]+?)-\d+\.(avif|webp)$/.exec(file)
-  if (match && !(match[1] in manifest) && match[1] !== 'romish-helmet') await rm(`${OUT}/${file}`)
+  if (match && !(match[1] in manifest)) await rm(`${OUT}/${file}`)
 }
+if (!(OG.slot in manifest)) await rm(OG.file, { force: true })
 
-// Romish helmet icon (home hero card) and site icons
-if (existsSync(`${SRC}/romish-helmet.png`)) {
-  await sharp(`${SRC}/romish-helmet.png`).resize(96).webp({ quality: 85 }).toFile(`${OUT}/romish-helmet-96.webp`)
-}
+// Site icons
 
 const icon = `${SRC}/icon-source.png`
 if (existsSync(icon)) {
@@ -149,7 +154,7 @@ export const imageMeta: Record<string, ImageMeta> = ${JSON.stringify(manifest, n
 `,
 )
 
-if (missing.length) console.log(`\nNo PNG yet (placeholder shown in dev): ${missing.join(', ')}`)
+if (missing.length) console.log(`\nNot in assets-src/ yet (the site shows a placeholder): ${missing.join(', ')}`)
 if (refused.length) {
   console.error(`\nNOT exported, blur regions need re-measuring:\n  ${refused.join('\n  ')}`)
   process.exitCode = 1
