@@ -1,0 +1,21 @@
+/* Shared styles for the Open Graph image templates (1200x630). */
+@font-face { font-family: Geist; src: url(../../public/fonts/geist-latin.woff2) format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Geist Mono'; src: url(../../public/fonts/geist-mono-latin.woff2) format('woff2'); font-weight: 100 900; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1200px; height: 630px; overflow: hidden; }
+body {
+  background: #09090b; color: #fafafa; font-family: Geist, sans-serif; padding: 72px 80px;
+  display: flex; flex-direction: column; justify-content: space-between; position: relative;
+  background-image: linear-gradient(to right, #27272a 1px, transparent 1px), linear-gradient(to bottom, #27272a 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+body::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 25% 30%, transparent, #09090b 75%); }
+body > * { position: relative; }
+.mono { font-family: 'Geist Mono', monospace; }
+.brand { font-size: 28px; font-weight: 600; }
+.accent { color: #818cf8; }
+.eyebrow { font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; color: #a1a1aa; }
+h1 { font-size: 92px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.02; }
+.muted { color: #a1a1aa; }
+.lead { font-size: 32px; line-height: 1.35; max-width: 900px; letter-spacing: -0.01em; }
+.foot { display: flex; justify-content: space-between; align-items: center; font-size: 22px; color: #a1a1aa; }

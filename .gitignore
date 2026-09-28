@@ -1,3 +1,10 @@
-
-romish-docs/
+node_modules/
+dist/
+.vite-ssg-temp/
+*.log
+.DS_Store
+.vercel
 .playwright-mcp/
+
+# Private Romish docs (source for the case study, not published)
+romish-docs/
